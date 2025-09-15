@@ -69,24 +69,14 @@ async function interactiveBuild() {
 
     if (!platform) return;
 
-    // Step 4: Auto-submit (production only)
-    let autoSubmit = false;
-    if (profile === "production") {
-      const response = await prompts({
-        type: "confirm",
-        name: "autoSubmit",
-        message: "Auto-submit to app stores after build?",
-        initial: false,
-      });
-      autoSubmit = response.autoSubmit || false;
-    }
+    // Note: Production builds will auto-submit to app stores (configured in eas.json)
 
     // Show summary
     styles.summary({
       Profile: profile,
       Location: location === "local" ? "Local Machine" : "EAS Cloud",
       Platform: platform === "all" ? "iOS + Android" : platform,
-      "Auto-submit": profile === "production" ? (autoSubmit ? "Yes" : "No") : "N/A",
+      "Auto-submit": profile === "production" ? "Yes (automatic)" : "No",
     });
 
     // Confirm
@@ -138,27 +128,9 @@ async function interactiveBuild() {
       }
 
       styles.success("Build completed!");
-
-      // Auto-submit if requested
-      if (autoSubmit && profile === "production") {
-        console.log("\n📤 Starting auto-submission to stores...\n");
-        
-        const submitChild = spawn("bunx", [
-          "eas", "submit",
-          "--profile", "production",
-          "--platform", platform
-        ], {
-          stdio: "inherit",
-          shell: true,
-        });
-
-        submitChild.on("close", (submitCode) => {
-          if (submitCode === 0) {
-            styles.success("Submission completed!");
-          } else {
-            styles.error(`Submission failed with code ${submitCode}`);
-          }
-        });
+      
+      if (profile === "production") {
+        console.log("\n📤 Auto-submitting to app stores (configured in eas.json)...\n");
       }
     });
   } catch (error) {

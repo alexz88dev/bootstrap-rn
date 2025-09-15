@@ -88,6 +88,7 @@ bun build
 → Production
 → Cloud
 # Creates release build pointing to prod backend
+# Automatically submits to app stores (configured in eas.json)
 ```
 
 ---

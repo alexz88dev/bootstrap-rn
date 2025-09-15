@@ -53,7 +53,8 @@
       "channel": "production",
       "env": {
         "APP_ENV": "production"
-      }
+      },
+      "autoSubmit": true
     }
   },
   "submit": {
