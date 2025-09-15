@@ -8,8 +8,16 @@
     "scheme": "alergyappv2",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alexzamfir.alergyappv2",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +27,9 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.alexzamfir.alergyappv2",
+      "versionCode": 1
     },
     "web": {
       "output": "static",
@@ -27,6 +37,8 @@
     },
     "plugins": [
       "expo-router",
+      "expo-updates",
+      "expo-dev-client",
       [
         "expo-splash-screen",
         {
@@ -43,6 +55,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8385d647-791b-4998-b66e-c6b11e4939a0"
+      }
+    },
+    "owner": "anaisdigitaldemo"
   }
 }

@@ -1,0 +1,95 @@
+# AllerScan Project Rules
+
+## Environment Configuration
+
+### Backend Environments (Only 2)
+
+- **Development Backend**: http://localhost:3000 (local development)
+- **Production Backend**: https://api.example.com (live production)
+
+### Build Profiles (3 profiles, 2 backends)
+
+| Profile       | Build Type         | Backend      | Use Case                                 |
+| ------------- | ------------------ | ------------ | ---------------------------------------- |
+| `development` | Dev Client (Debug) | Dev Backend  | Local development with hot reload        |
+| `staging`     | Release Build      | Dev Backend  | Testing release builds before production |
+| `production`  | Release Build      | Prod Backend | App store distribution                   |
+
+### Important Notes
+
+- **NO staging backend** - staging builds use the dev backend
+- The "preview" profile in eas.json can be ignored or removed
+- When updating configs, remember staging uses dev backend URLs
+
+## Command System
+
+### Just 3 Interactive Commands
+
+```bash
+bun start  # Dev server OR local build
+bun build  # Create EAS builds
+bun ota    # Push OTA updates
+```
+
+## Technology Stack
+
+- **Package Manager**: Bun (not npm/yarn)
+- **Framework**: Expo SDK 54
+- **Navigation**: Expo Router
+- **Build System**: EAS Build
+- **Updates**: EAS Updates (OTA)
+
+## Development Guidelines
+
+### When working on this project:
+
+1. Always use `bun` for package management, not npm or yarn
+2. Use the 3-command system for all development workflows
+3. Remember staging profile uses dev backend (not a separate staging backend)
+4. All commands are interactive - follow the prompts
+5. Development and staging share the same backend infrastructure
+
+### Environment Quick Reference
+
+```typescript
+// Development: Debug build + Dev backend
+APP_ENV=development → localhost:3000
+
+// Staging: Release build + Dev backend
+APP_ENV=staging → localhost:3000 (same as dev!)
+
+// Production: Release build + Prod backend
+APP_ENV=production → api.example.com
+```
+
+## Project Structure
+
+- `/scripts` - Interactive command scripts (start.js, build.js, ota.js)
+- `/config/environments` - Environment configurations
+- `/ai-docs` - Project documentation
+- `eas.json` - EAS Build configuration
+- `app.json` - Expo app configuration
+
+## Common Tasks
+
+### Testing release builds with dev backend
+
+```bash
+bun build
+→ Staging
+→ Cloud/Local
+# Creates release build pointing to dev backend
+```
+
+### Production deployment
+
+```bash
+bun build
+→ Production
+→ Cloud
+# Creates release build pointing to prod backend
+```
+
+---
+
+Remember: Only 2 backends (dev & prod), but 3 build profiles for different testing scenarios.
