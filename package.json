@@ -6,6 +6,7 @@
     "start": "node ./scripts/start.js",
     "build": "node ./scripts/build.js",
     "ota": "node ./scripts/ota.js",
+    "version": "node ./scripts/version.js",
     "clean": "rm -rf node_modules ios/build android/build .expo",
     "reset": "node ./scripts/reset-project.js",
     "lint": "expo lint"

@@ -21,14 +21,40 @@
 - The "preview" profile in eas.json can be ignored or removed
 - When updating configs, remember staging uses dev backend URLs
 
+## Version Management
+
+### Three-Tier Version System
+
+1. **App Version** (e.g., 1.0.0)
+   - User-facing version shown in app stores
+   - Manually bumped via prompts when building production
+   - Semantic versioning (major.minor.patch)
+
+2. **Build Number** (iOS) / Version Code (Android)
+   - Auto-incremented by EAS for every build
+   - Handled automatically, no manual intervention needed
+
+3. **Runtime Version**
+   - Uses `fingerprint` policy for automatic native change detection
+   - Enables EAS build caching for faster builds
+   - OTA updates only work within same runtime version
+
+### Build Caching
+
+- Fingerprint-based caching enabled for all profiles
+- Reuses previous builds when native dependencies unchanged
+- Significantly reduces build time and costs
+- Cache keys: development-cache, staging-cache, production-cache
+
 ## Command System
 
-### Just 3 Interactive Commands
+### Main Interactive Commands
 
 ```bash
-bun start  # Dev server OR local build
-bun build  # Create EAS builds
-bun ota    # Push OTA updates
+bun start   # Dev server OR local build
+bun build   # Create EAS builds (with version management)
+bun ota     # Push OTA updates
+bun version # Check all version information
 ```
 
 ## Technology Stack

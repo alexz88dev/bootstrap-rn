@@ -5,6 +5,7 @@
 const { spawn } = require("child_process");
 const { prompts, styles, buildProfiles, platforms } = require("./utils/prompts");
 const { checkEASInstalled } = require("./utils/prerequisites");
+const VersionManager = require("./utils/version-manager");
 
 async function interactiveBuild() {
   styles.section("🏗️  EAS Build");
@@ -68,6 +69,12 @@ async function interactiveBuild() {
     });
 
     if (!platform) return;
+
+    // Version management for production builds
+    const versionManager = new VersionManager();
+    if (profile === "production") {
+      await versionManager.checkVersionBump(profile);
+    }
 
     // Note: Production builds will auto-submit to app stores (configured in eas.json)
 
