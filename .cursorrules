@@ -26,11 +26,13 @@
 ### Three-Tier Version System
 
 1. **App Version** (e.g., 1.0.0)
+
    - User-facing version shown in app stores
    - Manually bumped via prompts when building production
    - Semantic versioning (major.minor.patch)
 
 2. **Build Number** (iOS) / Version Code (Android)
+
    - Auto-incremented by EAS for every build
    - Handled automatically, no manual intervention needed
 
@@ -96,27 +98,60 @@ APP_ENV=production → api.example.com
 - `eas.json` - EAS Build configuration
 - `app.json` - Expo app configuration
 
-## Common Tasks
+## Common Scenarios
 
-### Testing release builds with dev backend
-
+### Daily Development
 ```bash
-bun build
-→ Staging
-→ Cloud/Local
-# Creates release build pointing to dev backend
+bun start → Dev server  # Existing dev client
 ```
 
-### Production deployment
-
+### Testing Release Build
 ```bash
-bun build
-→ Production
-→ Cloud
-# Creates release build pointing to prod backend
-# Automatically submits to app stores (configured in eas.json)
+bun build → Staging → Cloud
+# Release build with dev backend
 ```
+
+### Production Release
+```bash
+bun build → Production → Cloud
+# Auto-version bump prompt
+# Auto-submit to stores
+# Build cached if no native changes
+```
+
+### Quick Fix (OTA)
+```bash
+bun ota → Production
+# Instant JS updates
+# Rollback available
+```
+
+### Feature Branch Testing
+```bash
+bun build → Staging → Custom channel
+# Isolated testing environment
+```
+
+## Key Features
+
+### OTA Updates
+- **Publish**: Push JS updates instantly
+- **Rollback**: Revert to previous version
+- **Channels**: Target specific user groups
+- **Custom Channels**: Feature branches, A/B testing
+
+### Build Caching
+- **Cached**: JS changes, assets, styles
+- **Not Cached**: Native modules, SDK updates
+- **Fingerprint**: Automatic detection
+
+### Version Management
+- **App Version**: Manual bump on production
+- **Build Number**: Auto-incremented
+- **Runtime Version**: Fingerprint-based
 
 ---
+
+For detailed workflows, see `/ai-docs/SCENARIOS.md`
 
 Remember: Only 2 backends (dev & prod), but 3 build profiles for different testing scenarios.

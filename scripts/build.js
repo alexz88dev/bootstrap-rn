@@ -55,6 +55,29 @@ async function interactiveBuild() {
       location = response.location || "cloud";
     }
 
+    // Step 2.5: Custom channel for staging (optional)
+    let customChannel = null;
+    if (profile === "staging") {
+      const { useCustomChannel } = await prompts({
+        type: "confirm",
+        name: "useCustomChannel",
+        message: "Use a custom channel? (for feature branches/A-B testing)",
+        initial: false,
+      });
+
+      if (useCustomChannel) {
+        const { channel } = await prompts({
+          type: "text",
+          name: "channel",
+          message: "Enter custom channel name:",
+          initial: "feature-",
+          validate: (value) => 
+            value.length < 2 ? "Channel name must be at least 2 characters" : true,
+        });
+        customChannel = channel;
+      }
+    }
+
     // Step 3: Choose platform
     const { platform } = await prompts({
       type: "select",
@@ -79,12 +102,21 @@ async function interactiveBuild() {
     // Note: Production builds will auto-submit to app stores (configured in eas.json)
 
     // Show summary
-    styles.summary({
+    const summaryData = {
       Profile: profile,
       Location: location === "local" ? "Local Machine" : "EAS Cloud",
       Platform: platform === "all" ? "iOS + Android" : platform,
-      "Auto-submit": profile === "production" ? "Yes (automatic)" : "No",
-    });
+    };
+    
+    if (customChannel) {
+      summaryData["Channel"] = customChannel;
+    }
+    
+    if (profile === "production") {
+      summaryData["Auto-submit"] = "Yes (automatic)";
+    }
+    
+    styles.summary(summaryData);
 
     // Confirm
     const { confirm } = await prompts({
@@ -113,6 +145,11 @@ async function interactiveBuild() {
       args.push("--platform", platform);
     } else {
       args.push("--platform", "all");
+    }
+    
+    // Add custom channel if specified
+    if (customChannel) {
+      args.push("--channel", customChannel);
     }
 
     // Execute build
