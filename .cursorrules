@@ -118,7 +118,7 @@ bun build → Staging → Cloud
 ```bash
 bun build → Production → Cloud
 # Auto-version bump prompt
-# Auto-submit to stores
+# Auto-submit to stores (via --auto-submit flag)
 # Build cached if no native changes
 ```
 

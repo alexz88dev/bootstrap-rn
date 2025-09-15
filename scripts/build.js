@@ -112,8 +112,8 @@ async function interactiveBuild() {
       summaryData["Channel"] = customChannel;
     }
     
-    if (profile === "production") {
-      summaryData["Auto-submit"] = "Yes (automatic)";
+    if (profile === "production" && location === "cloud") {
+      summaryData["Auto-submit"] = "Yes (after build)";
     }
     
     styles.summary(summaryData);
@@ -151,6 +151,11 @@ async function interactiveBuild() {
     if (customChannel) {
       args.push("--channel", customChannel);
     }
+    
+    // Add auto-submit flag for production cloud builds
+    if (profile === "production" && location === "cloud") {
+      args.push("--auto-submit");
+    }
 
     // Execute build
     console.log(`\n🔨 Executing: ${command} ${args.join(" ")}\n`);
@@ -173,8 +178,9 @@ async function interactiveBuild() {
 
       styles.success("Build completed!");
       
-      if (profile === "production") {
-        console.log("\n📤 Auto-submitting to app stores (configured in eas.json)...\n");
+      if (profile === "production" && location === "cloud") {
+        console.log("\n📤 Build will be auto-submitted to app stores (if configured)\n");
+        console.log("📊 Check submission status at: https://expo.dev\n");
       }
     });
   } catch (error) {
