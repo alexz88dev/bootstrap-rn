@@ -101,17 +101,20 @@ APP_ENV=production → api.example.com
 ## Common Scenarios
 
 ### Daily Development
+
 ```bash
 bun start → Dev server  # Existing dev client
 ```
 
 ### Testing Release Build
+
 ```bash
 bun build → Staging → Cloud
 # Release build with dev backend
 ```
 
 ### Production Release
+
 ```bash
 bun build → Production → Cloud
 # Auto-version bump prompt
@@ -120,6 +123,7 @@ bun build → Production → Cloud
 ```
 
 ### Quick Fix (OTA)
+
 ```bash
 bun ota → Production
 # Instant JS updates
@@ -127,6 +131,7 @@ bun ota → Production
 ```
 
 ### Feature Branch Testing
+
 ```bash
 bun build → Staging → Custom channel
 # Isolated testing environment
@@ -135,17 +140,20 @@ bun build → Staging → Custom channel
 ## Key Features
 
 ### OTA Updates
+
 - **Publish**: Push JS updates instantly
 - **Rollback**: Revert to previous version
 - **Channels**: Target specific user groups
 - **Custom Channels**: Feature branches, A/B testing
 
 ### Build Caching
+
 - **Cached**: JS changes, assets, styles
 - **Not Cached**: Native modules, SDK updates
 - **Fingerprint**: Automatic detection
 
 ### Version Management
+
 - **App Version**: Manual bump on production
 - **Build Number**: Auto-incremented
 - **Runtime Version**: Fingerprint-based

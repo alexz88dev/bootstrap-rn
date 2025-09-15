@@ -3,7 +3,12 @@
 // Enhanced OTA script with rollback and custom channel support
 
 const { spawn } = require("child_process");
-const { prompts, styles, environments, confirmProduction } = require("./utils/prompts");
+const {
+  prompts,
+  styles,
+  environments,
+  confirmProduction,
+} = require("./utils/prompts");
 
 async function interactiveUpdate() {
   styles.section("📡 Over-The-Air Update");
@@ -50,8 +55,10 @@ async function interactiveUpdate() {
         type: "text",
         name: "customChannel",
         message: "Enter custom channel name:",
-        validate: (value) => 
-          value.length < 2 ? "Channel name must be at least 2 characters" : true,
+        validate: (value) =>
+          value.length < 2
+            ? "Channel name must be at least 2 characters"
+            : true,
       });
       channel = customChannel;
     } else {
@@ -79,7 +86,6 @@ async function interactiveUpdate() {
     } else {
       await handlePublish(channel);
     }
-
   } catch (error) {
     if (error.message) {
       styles.error(`Error: ${error.message}`);
@@ -94,7 +100,7 @@ async function handlePublish(channel) {
     type: "text",
     name: "message",
     message: "Update message (describe what changed):",
-    validate: (value) => 
+    validate: (value) =>
       value.length < 3 ? "Message must be at least 3 characters" : true,
   });
 
@@ -103,7 +109,7 @@ async function handlePublish(channel) {
   // Production confirmation
   if (channel === "production") {
     const { confirmProd } = await prompts(confirmProduction);
-    
+
     if (!confirmProd) {
       styles.info("Production update cancelled for safety");
       return;
@@ -115,18 +121,22 @@ async function handlePublish(channel) {
     Action: "Publish Update",
     Channel: channel,
     Message: message,
-    Impact: channel === "production" ? "⚠️  LIVE USERS" : 
-            channel === "staging" ? "Internal testing" : 
-            `Custom: ${channel}`,
+    Impact:
+      channel === "production"
+        ? "⚠️  LIVE USERS"
+        : channel === "staging"
+        ? "Internal testing"
+        : `Custom: ${channel}`,
   });
 
   // Final confirmation
   const { confirm } = await prompts({
     type: "confirm",
     name: "confirm",
-    message: channel === "production" 
-      ? "⚠️  Ready to update PRODUCTION?" 
-      : "Ready to publish update?",
+    message:
+      channel === "production"
+        ? "⚠️  Ready to update PRODUCTION?"
+        : "Ready to publish update?",
     initial: true,
   });
 
@@ -140,7 +150,9 @@ async function handlePublish(channel) {
   const args = ["--branch", channel, "--message", message];
 
   // Execute
-  console.log(`\n🔨 Executing: ${command} --branch ${channel} --message "${message}"\n`);
+  console.log(
+    `\n🔨 Executing: ${command} --branch ${channel} --message "${message}"\n`
+  );
 
   const child = spawn("bunx", [command, ...args], {
     stdio: "inherit",
@@ -159,12 +171,16 @@ async function handlePublish(channel) {
     }
 
     styles.success(`Update published to ${channel}!`);
-    
+
     if (channel === "production") {
-      console.log("\n🎉 Production users will receive the update automatically");
+      console.log(
+        "\n🎉 Production users will receive the update automatically"
+      );
       console.log("📊 Monitor rollout at: https://expo.dev\n");
     } else {
-      console.log(`\n✅ ${channel} builds will receive the update on next app launch\n`);
+      console.log(
+        `\n✅ ${channel} builds will receive the update on next app launch\n`
+      );
     }
   });
 }
@@ -173,9 +189,13 @@ async function handleRollback(channel) {
   console.log(`\n🔍 Fetching update history for channel: ${channel}...\n`);
 
   // First, get the list of updates
-  const listChild = spawn("bunx", ["eas", "update:list", "--branch", channel, "--json"], {
-    shell: true,
-  });
+  const listChild = spawn(
+    "bunx",
+    ["eas", "update:list", "--branch", channel, "--json"],
+    {
+      shell: true,
+    }
+  );
 
   let output = "";
   listChild.stdout.on("data", (data) => {
@@ -190,7 +210,7 @@ async function handleRollback(channel) {
 
     try {
       const updates = JSON.parse(output);
-      
+
       if (!updates || updates.length === 0) {
         styles.warning("No updates found for this channel");
         return;
@@ -198,7 +218,9 @@ async function handleRollback(channel) {
 
       // Show recent updates
       const choices = updates.slice(0, 10).map((update, index) => ({
-        title: `${update.message || "No message"} (${new Date(update.createdAt).toLocaleString()})`,
+        title: `${update.message || "No message"} (${new Date(
+          update.createdAt
+        ).toLocaleString()})`,
         value: update.id,
         description: `ID: ${update.id.substring(0, 8)}...`,
         disabled: index === 0 ? "(current)" : false,
@@ -220,9 +242,10 @@ async function handleRollback(channel) {
       const { confirmRollback } = await prompts({
         type: "confirm",
         name: "confirmRollback",
-        message: channel === "production" 
-          ? "⚠️  Confirm PRODUCTION rollback?" 
-          : "Confirm rollback?",
+        message:
+          channel === "production"
+            ? "⚠️  Confirm PRODUCTION rollback?"
+            : "Confirm rollback?",
         initial: false,
       });
 
@@ -233,14 +256,23 @@ async function handleRollback(channel) {
 
       // Execute rollback
       console.log(`\n↩️  Rolling back to update: ${updateId}\n`);
-      
-      const rollbackChild = spawn("bunx", [
-        "eas", "update", "--branch", channel, 
-        "--republish", "--update-id", updateId
-      ], {
-        stdio: "inherit",
-        shell: true,
-      });
+
+      const rollbackChild = spawn(
+        "bunx",
+        [
+          "eas",
+          "update",
+          "--branch",
+          channel,
+          "--republish",
+          "--update-id",
+          updateId,
+        ],
+        {
+          stdio: "inherit",
+          shell: true,
+        }
+      );
 
       rollbackChild.on("close", (code) => {
         if (code === 0) {
@@ -250,7 +282,6 @@ async function handleRollback(channel) {
           styles.error("Rollback failed");
         }
       });
-
     } catch (error) {
       styles.error("Failed to parse update history");
       console.error(error);
