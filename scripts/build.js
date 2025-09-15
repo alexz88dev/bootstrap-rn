@@ -3,7 +3,12 @@
 // Clean interactive script for EAS builds
 
 const { spawn } = require("child_process");
-const { prompts, styles, buildProfiles, platforms } = require("./utils/prompts");
+const {
+  prompts,
+  styles,
+  buildProfiles,
+  platforms,
+} = require("./utils/prompts");
 const { checkEASInstalled } = require("./utils/prerequisites");
 const VersionManager = require("./utils/version-manager");
 
@@ -71,8 +76,10 @@ async function interactiveBuild() {
           name: "channel",
           message: "Enter custom channel name:",
           initial: "feature-",
-          validate: (value) => 
-            value.length < 2 ? "Channel name must be at least 2 characters" : true,
+          validate: (value) =>
+            value.length < 2
+              ? "Channel name must be at least 2 characters"
+              : true,
         });
         customChannel = channel;
       }
@@ -107,24 +114,25 @@ async function interactiveBuild() {
       Location: location === "local" ? "Local Machine" : "EAS Cloud",
       Platform: platform === "all" ? "iOS + Android" : platform,
     };
-    
+
     if (customChannel) {
       summaryData["Channel"] = customChannel;
     }
-    
+
     if (profile === "production" && location === "cloud") {
       summaryData["Auto-submit"] = "Yes (after build)";
     }
-    
+
     styles.summary(summaryData);
 
     // Confirm
     const { confirm } = await prompts({
       type: "confirm",
       name: "confirm",
-      message: profile === "production" 
-        ? "⚠️  Ready to create PRODUCTION build?" 
-        : "Ready to build?",
+      message:
+        profile === "production"
+          ? "⚠️  Ready to create PRODUCTION build?"
+          : "Ready to build?",
       initial: true,
     });
 
@@ -146,12 +154,12 @@ async function interactiveBuild() {
     } else {
       args.push("--platform", "all");
     }
-    
+
     // Add custom channel if specified
     if (customChannel) {
       args.push("--channel", customChannel);
     }
-    
+
     // Add auto-submit flag for production cloud builds
     if (profile === "production" && location === "cloud") {
       args.push("--auto-submit");
@@ -177,9 +185,11 @@ async function interactiveBuild() {
       }
 
       styles.success("Build completed!");
-      
+
       if (profile === "production" && location === "cloud") {
-        console.log("\n📤 Build will be auto-submitted to app stores (if configured)\n");
+        console.log(
+          "\n📤 Build will be auto-submitted to app stores (if configured)\n"
+        );
         console.log("📊 Check submission status at: https://expo.dev\n");
       }
     });

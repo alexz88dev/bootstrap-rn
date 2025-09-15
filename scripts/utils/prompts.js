@@ -48,12 +48,7 @@ const buildProfiles = {
   staging: {
     title: "🧪 Staging",
     value: "staging",
-    description: "Release build with staging backend",
-  },
-  preview: {
-    title: "👁️  Preview",
-    value: "preview",
-    description: "Internal testing build",
+    description: "Release build with dev backend",
   },
   production: {
     title: "🚀 Production",
