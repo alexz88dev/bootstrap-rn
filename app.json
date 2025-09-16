@@ -2,7 +2,7 @@
   "expo": {
     "name": "alergy-app-v2",
     "slug": "alergy-app-v2",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "alergyappv2",
@@ -19,7 +19,8 @@
       "bundleIdentifier": "com.alexzamfir.alergyappv2",
       "buildNumber": "1",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "This app uses the camera to scan documents and extract text with OCR."
       }
     },
     "android": {
