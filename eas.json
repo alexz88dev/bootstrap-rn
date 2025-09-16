@@ -44,7 +44,8 @@
       },
       "channel": "staging",
       "env": {
-        "APP_ENV": "staging"
+        "APP_ENV": "staging",
+        "EAS_BUILD_ENVIRONMENT": "staging"
       }
     },
     "production": {
