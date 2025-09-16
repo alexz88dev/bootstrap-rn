@@ -1,5 +1,7 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, Alert } from "react-native";
+import * as Updates from "expo-updates";
+import { useEffect } from "react";
 
 import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
@@ -8,6 +10,36 @@ import { ThemedView } from "@/components/themed-view";
 import { Link } from "expo-router";
 
 export default function HomeScreen() {
+  useEffect(() => {
+    // Check for updates when app loads
+    async function checkForUpdates() {
+      if (!__DEV__) {
+        try {
+          const update = await Updates.checkForUpdateAsync();
+          if (update.isAvailable) {
+            Alert.alert(
+              "Update Available",
+              "A new update is available. Restart the app to apply it.",
+              [
+                { text: "Later", style: "cancel" },
+                {
+                  text: "Restart",
+                  onPress: async () => {
+                    await Updates.fetchUpdateAsync();
+                    await Updates.reloadAsync();
+                  },
+                },
+              ]
+            );
+          }
+        } catch (e) {
+          console.log("Update check failed:", e);
+        }
+      }
+    }
+    checkForUpdates();
+  }, []);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -19,11 +51,17 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Welcome! v2 🚀</ThemedText>
         <HelloWave />
+        {!__DEV__ && (
+          <ThemedText style={{ fontSize: 12, marginTop: 10 }}>
+            Channel: {Updates.channel || "none"} | 
+            Runtime: {Updates.runtimeVersion?.slice(0, 8) || "none"}
+          </ThemedText>
+        )}
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it OTA</ThemedText>
+        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
           Edit{" "}
           <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
