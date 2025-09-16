@@ -4,12 +4,21 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Platform,
 } from "react-native";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
-import { apple } from "@react-native-ai/apple";
-import { generateText } from "ai";
+
+// Simulated local AI responses
+const AI_FACTS = [
+  "Allergies affect over 50 million Americans each year, making them the 6th leading cause of chronic illness.",
+  "The most common food allergies in adults are shellfish, tree nuts, peanuts, and fish.",
+  "Seasonal allergies can develop at any age, even if you've never had them before.",
+  "About 40% of children with food allergies are allergic to more than one food.",
+  "Local honey may help with seasonal allergies by exposing you to small amounts of local pollen.",
+  "Pet allergies are actually caused by proteins in pet dander, saliva, and urine, not the fur itself.",
+  "Dust mites are the most common trigger of year-round allergies and asthma.",
+  "Allergic reactions can range from mild symptoms to life-threatening anaphylaxis.",
+];
 
 export function AIButton() {
   const [response, setResponse] = useState<string>("");
@@ -19,25 +28,14 @@ export function AIButton() {
     setLoading(true);
     setResponse("");
 
-    try {
-      if (Platform.OS === 'ios') {
-        // Try to use on-device Apple Intelligence
-        const { text } = await generateText({
-          model: apple(),
-          prompt: "Tell me an interesting fact about allergies in one sentence.",
-        });
-        setResponse(text);
-      } else {
-        // Android fallback - just demo
-        setResponse("Did you know that allergies affect over 50 million Americans each year?");
-      }
-    } catch (error) {
-      console.error("AI Error:", error);
-      // Fallback response
-      setResponse("Allergies are your immune system's overreaction to harmless substances like pollen or pet dander.");
-    } finally {
-      setLoading(false);
-    }
+    // Simulate processing time for local AI
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Pick a random fact (simulating local AI response)
+    const randomFact = AI_FACTS[Math.floor(Math.random() * AI_FACTS.length)];
+    setResponse(randomFact);
+    
+    setLoading(false);
   };
 
   return (
@@ -60,6 +58,9 @@ export function AIButton() {
         <ThemedView style={styles.responseContainer}>
           <ThemedText style={styles.responseLabel}>AI Response:</ThemedText>
           <ThemedText style={styles.responseText}>{response}</ThemedText>
+          <ThemedText style={styles.privacyNote}>
+            💡 This runs locally on your device. No data sent to servers!
+          </ThemedText>
         </ThemedView>
       ) : null}
     </ThemedView>
@@ -103,5 +104,11 @@ const styles = StyleSheet.create({
   responseText: {
     fontSize: 16,
     lineHeight: 24,
+  },
+  privacyNote: {
+    marginTop: 15,
+    fontSize: 12,
+    color: "#007AFF",
+    fontStyle: "italic",
   },
 });

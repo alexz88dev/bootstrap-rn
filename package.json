@@ -13,11 +13,9 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
-    "@react-native-ai/apple": "^0.9.0",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.4",
     "@react-navigation/native": "^7.1.8",
-    "ai": "^5.0.44",
     "expo": "~54.0.7",
     "expo-constants": "~18.0.8",
     "expo-dev-client": "^6.0.12",
