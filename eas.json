@@ -23,7 +23,8 @@
       },
       "channel": "development",
       "env": {
-        "APP_ENV": "development"
+        "APP_ENV": "development",
+        "EAS_BUILD_ENVIRONMENT": "development"
       }
     },
     "staging": {
@@ -62,7 +63,8 @@
       },
       "channel": "production",
       "env": {
-        "APP_ENV": "production"
+        "APP_ENV": "production",
+        "EAS_BUILD_ENVIRONMENT": "production"
       }
     }
   }
