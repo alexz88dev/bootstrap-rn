@@ -111,6 +111,7 @@ bun start → Dev server  # Existing dev client
 ```bash
 bun build → Staging → Cloud
 # Release build with dev backend
+# Auto-submits to internal testing track
 ```
 
 ### Production Release
@@ -118,7 +119,7 @@ bun build → Staging → Cloud
 ```bash
 bun build → Production → Cloud
 # Version bump prompt (also for staging)
-# Manual submission to stores required
+# Auto-submits to app stores (if configured)
 # Build cached if no native changes
 ```
 
