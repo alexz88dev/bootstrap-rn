@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet, Alert } from "react-native";
 import * as Updates from "expo-updates";
 import { useEffect } from "react";
+import { Alert, Platform, StyleSheet } from "react-native";
 
 import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
@@ -51,12 +51,12 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome! v2 🚀</ThemedText>
+        <ThemedText type="title">Welcome! v3 🚀</ThemedText>
         <HelloWave />
         {!__DEV__ && (
           <ThemedText style={{ fontSize: 12, marginTop: 10 }}>
-            Channel: {Updates.channel || "none"} | 
-            Runtime: {Updates.runtimeVersion?.slice(0, 8) || "none"}
+            Channel: {Updates.channel || "none"} | Runtime:{" "}
+            {Updates.runtimeVersion?.slice(0, 8) || "none"}
           </ThemedText>
         )}
       </ThemedView>
