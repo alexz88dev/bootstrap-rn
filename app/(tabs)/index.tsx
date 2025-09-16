@@ -51,7 +51,7 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome! v3 🚀</ThemedText>
+        <ThemedText type="title">Welcome! v4 with AI 🤖</ThemedText>
         <HelloWave />
         {!__DEV__ && (
           <ThemedText style={{ fontSize: 12, marginTop: 10 }}>
@@ -59,6 +59,13 @@ export default function HomeScreen() {
             {Updates.runtimeVersion?.slice(0, 8) || "none"}
           </ThemedText>
         )}
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">✨ New Feature: AI Chat!</ThemedText>
+        <ThemedText>
+          Check out the new AI Chat tab to interact with our AI assistant. It
+          can answer questions and help you with various tasks.
+        </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
