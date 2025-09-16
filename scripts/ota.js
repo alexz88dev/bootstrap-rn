@@ -37,54 +37,75 @@ async function interactiveUpdate() {
       return;
     }
 
-    // Step 2: Choose channel/environment
-    const { channelType } = await prompts({
+    // Step 2: Choose channel
+    const { channel } = await prompts({
       type: "select",
-      name: "channelType",
-      message: "Select channel type:",
+      name: "channel",
+      message: "Select update channel:",
       choices: [
-        { title: "🏢 Standard channels", value: "standard" },
-        { title: "🎯 Custom channel", value: "custom" },
+        {
+          title: "🛠️  Development",
+          value: "development",
+          description: "Dev builds with debug features",
+        },
+        {
+          title: "🧪 Staging",
+          value: "staging",
+          description: "Testing release builds",
+        },
+        {
+          title: "🚀 Production",
+          value: "production",
+          description: "⚠️  Live users - be careful!",
+        },
+        {
+          title: "🎯 Custom Channel...",
+          value: "custom",
+          description: "Feature branches, A/B tests, beta groups",
+        },
       ],
-      initial: 0,
+      initial: 1, // Default to staging (safer than production)
     });
 
-    let channel;
-    if (channelType === "custom") {
+    let finalChannel = channel;
+
+    // If custom channel selected, get the channel name
+    if (channel === "custom") {
+      console.log("\n💡 Custom channels are useful for:");
+      console.log("  • Feature branches (feature-payment, feature-auth)");
+      console.log("  • A/B testing (experiment-v2, new-ui-test)");
+      console.log("  • Beta testing groups (beta-testers, early-access)");
+      console.log("  • Regional rollouts (us-west, eu-central)");
+      console.log("  • Gradual rollouts (10-percent, 50-percent)\n");
+
       const { customChannel } = await prompts({
         type: "text",
         name: "customChannel",
         message: "Enter custom channel name:",
+        initial: "feature-",
         validate: (value) =>
           value.length < 2
             ? "Channel name must be at least 2 characters"
             : true,
       });
-      channel = customChannel;
-    } else {
-      const { environment } = await prompts({
-        type: "select",
-        name: "environment",
-        message: "Target environment?",
-        choices: [
-          environments.development,
-          environments.staging,
-          { ...environments.production, description: "⚠️  Live users" },
-        ],
-        initial: 0,
-      });
-      channel = environment;
+
+      if (!customChannel) {
+        styles.info("Update cancelled");
+        return;
+      }
+
+      finalChannel = customChannel;
     }
 
-    if (!channel) {
+    if (!finalChannel) {
       styles.info("Update cancelled");
       return;
     }
 
     if (action === "rollback") {
-      await handleRollback(channel);
+      await handleRollback(finalChannel);
     } else {
-      await handlePublish(channel);
+      await handlePublish(finalChannel);
     }
   } catch (error) {
     if (error.message) {

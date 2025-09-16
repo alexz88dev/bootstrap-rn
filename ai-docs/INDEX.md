@@ -14,6 +14,10 @@ Full documentation of the command system and configuration.
 
 Common tasks and quick answers.
 
+### **[CUSTOM_CHANNELS.md](./CUSTOM_CHANNELS.md)** - Custom Channels Guide
+
+When and how to use custom channels for feature branches, A/B testing, and more.
+
 ## 🎯 Main Commands
 
 ```bash
