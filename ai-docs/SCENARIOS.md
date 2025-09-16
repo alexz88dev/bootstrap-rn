@@ -132,7 +132,7 @@ bun build
 - ✅ **Build CACHED** (same fingerprint)
 - ⚡ **Fast build** (~2-5 minutes vs 20-30)
 - 💰 **Cost savings** (uses cached artifacts)
-- 🚀 **Auto-submits** to App Store/Play Store
+- 📤 **Ready for submission** to App Store/Play Store
 - Same runtime version maintained
 
 ### Scenario 7: Production Release (Native Changes)
@@ -152,7 +152,7 @@ bun build
 - ❌ **Build NOT cached** (fingerprint changed)
 - 🔄 **New runtime version** generated
 - 🏗️ **Full native build** required (20-30 min)
-- 🚀 **Auto-submits** to stores
+- 📤 **Ready for submission** to stores
 - Old app versions can't receive OTA updates
 
 ## 📡 OTA Update Scenarios
@@ -313,7 +313,7 @@ Is it JS-only?
 bun build
 → Production
 → Don't bump version (resubmit same version)
-→ Auto-submit again
+→ Manually submit to stores
 ```
 
 ## 📋 Best Practices
@@ -370,7 +370,7 @@ bun ota → Staging
 ```bash
 bun build → Production → Cloud
 → Bump version → Minor (1.0.0 → 1.1.0)
-# Auto-submits to stores
+# Ready for manual submission to stores
 # New runtime version due to native module
 ```
 

@@ -1,9 +1,9 @@
-import { StyleSheet, ScrollView } from "react-native";
-import { ThemedView } from "@/components/themed-view";
-import { ThemedText } from "@/components/themed-text";
 import { AIButton } from "@/components/ai-button";
 import { OCRScanner } from "@/components/ocr-scanner";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { ScrollView, StyleSheet } from "react-native";
 
 export default function AIScreen() {
   return (
@@ -15,7 +15,7 @@ export default function AIScreen() {
             AI Features
           </ThemedText>
         </ThemedView>
-        
+
         <ThemedText style={styles.description}>
           Test our AI capabilities - both simulated local AI and native OCR
         </ThemedText>

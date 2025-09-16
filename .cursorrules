@@ -28,7 +28,7 @@
 1. **App Version** (e.g., 1.0.0)
 
    - User-facing version shown in app stores
-   - Manually bumped via prompts when building production
+   - Manually bumped via prompts when building staging or production
    - Semantic versioning (major.minor.patch)
 
 2. **Build Number** (iOS) / Version Code (Android)
@@ -117,8 +117,8 @@ bun build → Staging → Cloud
 
 ```bash
 bun build → Production → Cloud
-# Auto-version bump prompt
-# Auto-submit to stores (via --auto-submit flag)
+# Version bump prompt (also for staging)
+# Manual submission to stores required
 # Build cached if no native changes
 ```
 
@@ -154,7 +154,7 @@ bun build → Staging → Custom channel
 
 ### Version Management
 
-- **App Version**: Manual bump on production
+- **App Version**: Manual bump on staging/production
 - **Build Number**: Auto-incremented
 - **Runtime Version**: Fingerprint-based
 
