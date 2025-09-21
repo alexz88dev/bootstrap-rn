@@ -1,44 +1,117 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { MyCarConfig } from '@/config/mycar-config';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
-import { useState } from 'react';
+import { SEEDREAM_TRANSFORMS } from '@/services/seedream-ai';
+import { FlatList, Pressable, StyleSheet, View, Image, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { useApp } from '@/contexts/AppContext';
+import type { SeedreamTransform } from '@/services/seedream-ai';
 
 export default function GalleryScreen() {
-  const [credits, setCredits] = useState(100);
-  const [unlockedStyles, setUnlockedStyles] = useState(['minimal', 'dark_gradient', 'asphalt']);
+  const router = useRouter();
+  const { user, credits, ownedStyles, purchaseStyle } = useApp();
+  const [selectedTransform, setSelectedTransform] = useState<SeedreamTransform | null>(null);
   
-  const allStyles = [
-    ...MyCarConfig.styles.free,
-    ...MyCarConfig.styles.premium,
-  ];
+  // Filter transforms based on user status
+  const availableTransforms = SEEDREAM_TRANSFORMS.filter(transform => {
+    if (!user?.isUnlocked) return false; // No transforms for free users
+    if (!transform.isPremium) return true; // Free transforms always available
+    return ownedStyles.includes(transform.id); // Premium only if owned
+  });
 
-  const renderStyleItem = ({ item }: { item: any }) => {
-    const isUnlocked = unlockedStyles.includes(item.id);
-    const isIncluded = item.included;
+  const lockedTransforms = SEEDREAM_TRANSFORMS.filter(transform => {
+    if (!user?.isUnlocked) return true; // All locked for free users
+    if (!transform.isPremium) return false; // Free transforms not locked
+    return !ownedStyles.includes(transform.id); // Premium locked if not owned
+  });
+
+  const handleTransformPress = async (transform: SeedreamTransform) => {
+    if (!user?.isUnlocked) {
+      // Navigate to paywall for unlock
+      router.push('/paywall');
+      return;
+    }
+
+    if (transform.isPremium && !ownedStyles.includes(transform.id)) {
+      // Show purchase dialog
+      Alert.alert(
+        `Unlock ${transform.name}`,
+        `This style costs ${transform.creditsRequired} credits. You have ${credits} credits available.`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Unlock',
+            onPress: async () => {
+              if (credits >= transform.creditsRequired) {
+                const success = await purchaseStyle(transform.id);
+                if (success) {
+                  Alert.alert('Success', `${transform.name} is now unlocked!`);
+                  setSelectedTransform(transform);
+                }
+              } else {
+                // Navigate to buy more credits
+                router.push('/paywall');
+              }
+            },
+          },
+        ]
+      );
+    } else {
+      // Already unlocked, select it
+      setSelectedTransform(transform);
+      // Navigate to upload with this transform selected
+      router.push({
+        pathname: '/upload',
+        params: { transformId: transform.id },
+      });
+    }
+  };
+
+  const renderTransformItem = ({ item }: { item: SeedreamTransform }) => {
+    const isUnlocked = !item.isPremium || ownedStyles.includes(item.id);
+    const isSelected = selectedTransform?.id === item.id;
+    const categoryColors = {
+      style: '#007AFF',
+      environment: '#34C759',
+      artistic: '#FF9500',
+      seasonal: '#AF52DE',
+    };
     
     return (
       <Pressable 
         style={[
-          styles.styleCard,
-          isUnlocked && styles.styleCardUnlocked
+          styles.transformCard,
+          isUnlocked && styles.transformCardUnlocked,
+          isSelected && styles.transformCardSelected,
         ]}
-        disabled={isUnlocked}
+        onPress={() => handleTransformPress(item)}
       >
-        <View style={styles.stylePreview}>
-          <IconSymbol 
-            name={isUnlocked ? "checkmark.circle.fill" : "lock.fill"} 
-            size={24} 
-            color={isUnlocked ? "#4CAF50" : "#999"} 
-          />
+        <View style={[styles.categoryBadge, { backgroundColor: categoryColors[item.category] }]}>
+          <ThemedText style={styles.categoryText}>
+            {item.category.toUpperCase()}
+          </ThemedText>
+        </View>
+
+        <View style={styles.transformPreview}>
+          {item.previewUrl ? (
+            <Image source={{ uri: item.previewUrl }} style={styles.previewImage} />
+          ) : (
+            <View style={[styles.previewPlaceholder, { backgroundColor: categoryColors[item.category] + '20' }]}>
+              <IconSymbol 
+                name={isUnlocked ? "photo" : "lock.fill"} 
+                size={32} 
+                color={isUnlocked ? categoryColors[item.category] : "#999"} 
+              />
+            </View>
+          )}
         </View>
         
-        <ThemedText type="defaultSemiBold" style={styles.styleName}>
-          {item.name || item.title}
+        <ThemedText type="defaultSemiBold" style={styles.transformName} numberOfLines={2}>
+          {item.name}
         </ThemedText>
         
-        {isIncluded ? (
+        {!item.isPremium ? (
           <ThemedText style={styles.includedBadge}>INCLUDED</ThemedText>
         ) : isUnlocked ? (
           <ThemedText style={styles.unlockedBadge}>UNLOCKED</ThemedText>
@@ -46,7 +119,7 @@ export default function GalleryScreen() {
           <View style={styles.costContainer}>
             <IconSymbol name="star.fill" size={16} color="#FFD700" />
             <ThemedText style={styles.costText}>
-              {item.cost || MyCarConfig.styles.creditCost}
+              {item.creditsRequired}
             </ThemedText>
           </View>
         )}
@@ -58,50 +131,77 @@ export default function GalleryScreen() {
     <ThemedView style={styles.container}>
       <ThemedView style={styles.header}>
         <ThemedText type="title" style={styles.title}>
-          Style Gallery
+          AI Style Gallery
         </ThemedText>
         <ThemedText style={styles.subtitle}>
-          Transform your car with premium backgrounds
+          Powered by Seedream 4.0 AI
         </ThemedText>
       </ThemedView>
 
-      <ThemedView style={styles.creditsHeader}>
-        <View style={styles.creditsInfo}>
-          <IconSymbol name="star.fill" size={24} color="#FFD700" />
-          <ThemedText type="defaultSemiBold" style={styles.creditsText}>
-            {credits} Credits Available
-          </ThemedText>
-        </View>
-        <Pressable style={styles.buyCreditsButton}>
-          <ThemedText style={styles.buyCreditsText}>Buy More</ThemedText>
-        </Pressable>
-      </ThemedView>
+      {user?.isUnlocked && (
+        <ThemedView style={styles.creditsHeader}>
+          <View style={styles.creditsInfo}>
+            <IconSymbol name="star.fill" size={24} color="#FFD700" />
+            <ThemedText type="defaultSemiBold" style={styles.creditsText}>
+              {credits} Credits Available
+            </ThemedText>
+          </View>
+          <Pressable 
+            style={styles.buyCreditsButton}
+            onPress={() => router.push('/paywall')}
+          >
+            <ThemedText style={styles.buyCreditsText}>Buy More</ThemedText>
+          </Pressable>
+        </ThemedView>
+      )}
 
       <FlatList
-        data={allStyles}
-        renderItem={renderStyleItem}
+        data={[...availableTransforms, ...lockedTransforms]}
+        renderItem={renderTransformItem}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.gridContainer}
         ListHeaderComponent={() => (
           <ThemedView style={styles.sectionHeader}>
-            <ThemedText type="subtitle">Available Styles</ThemedText>
+            <ThemedText type="subtitle">
+              {user?.isUnlocked ? 'AI Transformations' : 'Unlock to Access'}
+            </ThemedText>
             <ThemedText style={styles.sectionSubtext}>
-              Tap to preview • Unlock with credits
+              {user?.isUnlocked 
+                ? `${availableTransforms.length} available • ${lockedTransforms.length} locked`
+                : 'Unlock the app to access AI styles'
+              }
             </ThemedText>
           </ThemedView>
         )}
-        ListFooterComponent={() => (
+        ListEmptyComponent={() => (
+          <ThemedView style={styles.emptyState}>
+            <IconSymbol name="lock.fill" size={48} color="#999" />
+            <ThemedText style={styles.emptyText}>
+              Unlock the app to access AI styles
+            </ThemedText>
+            <Pressable 
+              style={styles.unlockButton}
+              onPress={() => router.push('/paywall')}
+            >
+              <ThemedText style={styles.unlockButtonText}>
+                Unlock Now for $8.99
+              </ThemedText>
+            </Pressable>
+          </ThemedView>
+        )}
+        ListFooterComponent={() => availableTransforms.length > 0 && (
           <ThemedView style={styles.footer}>
             <ThemedText style={styles.footerText}>
-              More styles coming soon!
+              New AI styles added monthly!
+            </ThemedText>
+            <ThemedText style={styles.footerSubtext}>
+              Each style uses advanced AI prompts for perfect results
             </ThemedText>
           </ThemedView>
         )}
       />
-
-      {/* Credit Packs Modal/Sheet would go here */}
     </ThemedView>
   );
 }
@@ -172,34 +272,59 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
   },
-  styleCard: {
+  transformCard: {
     width: '48%',
-    aspectRatio: 1,
     backgroundColor: '#F0F0F0',
     borderRadius: 16,
-    padding: 16,
+    padding: 12,
     alignItems: 'center',
-    justifyContent: 'center',
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  styleCardUnlocked: {
+  transformCardUnlocked: {
     borderColor: '#4CAF50',
     backgroundColor: '#F8FFF8',
   },
-  stylePreview: {
-    width: 80,
-    height: 80,
-    borderRadius: 12,
-    backgroundColor: '#E0E0E0',
-    justifyContent: 'center',
-    alignItems: 'center',
+  transformCardSelected: {
+    borderColor: '#007AFF',
+    backgroundColor: '#F0F8FF',
+  },
+  categoryBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    zIndex: 1,
+  },
+  categoryText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFF',
+  },
+  transformPreview: {
+    width: '100%',
+    aspectRatio: 1,
     marginBottom: 12,
   },
-  styleName: {
-    fontSize: 16,
+  previewImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+  },
+  previewPlaceholder: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  transformName: {
+    fontSize: 14,
     marginBottom: 8,
     textAlign: 'center',
+    minHeight: 36,
   },
   costContainer: {
     flexDirection: 'row',
@@ -233,13 +358,43 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 10,
   },
+  emptyState: {
+    paddingVertical: 60,
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 16,
+    marginBottom: 24,
+  },
+  unlockButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 25,
+  },
+  unlockButtonText: {
+    color: '#FFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
   footer: {
     paddingVertical: 40,
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   footerText: {
     fontSize: 14,
+    color: '#666',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  footerSubtext: {
+    fontSize: 12,
     color: '#999',
-    fontStyle: 'italic',
+    textAlign: 'center',
   },
 });

@@ -9,7 +9,11 @@ export const productionConfig = {
   // RevenueCat Configuration (production)
   REVENUECAT_API_KEY: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_PROD || "prod-revenuecat-key",
   
-  // AI Provider (production)
+  // Seedream 4.0 AI Configuration (production)
+  SEEDREAM_API_KEY: process.env.EXPO_PUBLIC_SEEDREAM_API_KEY_PROD || "",
+  SEEDREAM_API_URL: process.env.EXPO_PUBLIC_SEEDREAM_API_URL || "https://api.seedream.ai/v4",
+  
+  // Legacy AI Provider (deprecated - use Seedream instead)
   AI_PROVIDER_URL: process.env.EXPO_PUBLIC_AI_PROVIDER_URL_PROD || "https://ai.mycarportrait.app",
   AI_PROVIDER_KEY: process.env.EXPO_PUBLIC_AI_PROVIDER_KEY_PROD || "prod-ai-key",
   
@@ -33,6 +37,7 @@ export const productionConfig = {
     ENABLE_DEV_MENU: false,
     LOG_ANALYTICS_EVENTS: false,
     BYPASS_RATE_LIMITS: false,
+    USE_SEEDREAM_MOCK: false, // Always use real API in production
   },
 };
 

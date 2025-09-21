@@ -9,7 +9,11 @@ export const stagingConfig = {
   // RevenueCat Configuration (sandbox)
   REVENUECAT_API_KEY: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || "dev-revenuecat-key",
   
-  // AI Provider (same as dev)
+  // Seedream 4.0 AI Configuration (staging)
+  SEEDREAM_API_KEY: process.env.EXPO_PUBLIC_SEEDREAM_API_KEY || "",
+  SEEDREAM_API_URL: process.env.EXPO_PUBLIC_SEEDREAM_API_URL || "https://api.seedream.ai/v4",
+  
+  // Legacy AI Provider (deprecated - use Seedream instead)
   AI_PROVIDER_URL: process.env.EXPO_PUBLIC_AI_PROVIDER_URL || "http://localhost:3001",
   AI_PROVIDER_KEY: process.env.EXPO_PUBLIC_AI_PROVIDER_KEY || "dev-ai-key",
   
@@ -30,6 +34,7 @@ export const stagingConfig = {
     ENABLE_DEV_MENU: false,
     LOG_ANALYTICS_EVENTS: true,
     BYPASS_RATE_LIMITS: false,
+    USE_SEEDREAM_MOCK: false, // Use real API in staging for testing
   },
 };
 

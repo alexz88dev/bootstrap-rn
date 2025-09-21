@@ -9,7 +9,11 @@ export const developmentConfig = {
   // RevenueCat Configuration
   REVENUECAT_API_KEY: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY || "dev-revenuecat-key",
   
-  // AI Provider (for background removal)
+  // Seedream 4.0 AI Configuration
+  SEEDREAM_API_KEY: process.env.EXPO_PUBLIC_SEEDREAM_API_KEY || "",
+  SEEDREAM_API_URL: process.env.EXPO_PUBLIC_SEEDREAM_API_URL || "https://api.seedream.ai/v4",
+  
+  // Legacy AI Provider (deprecated - use Seedream instead)
   AI_PROVIDER_URL: process.env.EXPO_PUBLIC_AI_PROVIDER_URL || "http://localhost:3001",
   AI_PROVIDER_KEY: process.env.EXPO_PUBLIC_AI_PROVIDER_KEY || "dev-ai-key",
   
@@ -26,10 +30,11 @@ export const developmentConfig = {
   // Feature Flags
   FEATURES: {
     SKIP_IAP_VALIDATION: true,
-    MOCK_IMAGE_PROCESSING: false,
+    MOCK_IMAGE_PROCESSING: true, // Use mock until Seedream API key is configured
     ENABLE_DEV_MENU: true,
     LOG_ANALYTICS_EVENTS: true,
     BYPASS_RATE_LIMITS: true,
+    USE_SEEDREAM_MOCK: true, // Mock Seedream responses in development
   },
 };
 
