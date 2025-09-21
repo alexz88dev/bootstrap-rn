@@ -154,27 +154,27 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 
 ## Phase 7: Analytics & Notifications
 ### 7.1 Firebase Analytics
-- [ ] SDK integration
-- [ ] Event tracking implementation
-- [ ] User properties setup
-- [ ] Conversion tracking
+- [x] SDK integration
+- [x] Event tracking implementation
+- [x] User properties setup
+- [x] Conversion tracking
 
 ### 7.2 Push Notifications
-- [ ] Expo Notifications setup
-- [ ] Re-engagement campaigns
-- [ ] Scheduled notifications
+- [x] Expo Notifications setup
+- [x] Re-engagement campaigns
+- [x] Scheduled notifications
 - [ ] Deep linking support
 
 ### 7.3 Key Events to Track
-- [ ] open_first
-- [ ] photo_uploaded
-- [ ] cutout_ready
-- [ ] preview_shown
-- [ ] paywall_shown
-- [ ] purchase_success
-- [ ] credits_balance_set
-- [ ] style_unlocked
-- [ ] widget_guide_shown
+- [x] open_first
+- [x] photo_uploaded
+- [x] cutout_ready
+- [x] preview_shown
+- [x] paywall_shown
+- [x] purchase_success
+- [x] credits_balance_set
+- [x] style_unlocked
+- [x] widget_guide_shown
 
 ---
 
