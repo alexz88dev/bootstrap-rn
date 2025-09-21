@@ -13,11 +13,11 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 ---
 
 ## Phase 1: Project Cleanup & Setup ⚡ CURRENT
-### 1.1 Clean AllerScan References [IN PROGRESS]
-- [ ] Update package.json name and metadata
-- [ ] Update app.json with MyCar Portrait details
+### 1.1 Clean AllerScan References [COMPLETED]
+- [x] Update package.json name and metadata
+- [x] Update app.json with MyCar Portrait details
 - [ ] Clean up existing components not needed
-- [ ] Update environment configurations
+- [x] Update environment configurations
 - [ ] Update EAS configuration for new app
 
 ### 1.2 Project Dependencies
