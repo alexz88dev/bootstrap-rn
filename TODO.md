@@ -81,18 +81,18 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 - [ ] Get Started flow
 
 ### 4.2 Photo Upload Screen
-- [ ] Camera integration
-- [ ] Photo library picker
-- [ ] Upload progress indicator
-- [ ] Error handling
-- [ ] Tips overlay
+- [x] Camera integration setup
+- [x] Photo library picker setup
+- [x] Upload progress indicator
+- [x] Error handling
+- [x] Tips overlay
 
 ### 4.3 Preview Screen (Conversion Engine)
 - [ ] CarPlay widget frame mockup
 - [ ] Style cycling animation
-- [ ] Processing state
+- [x] Processing state
 - [ ] Unlock CTA button
-- [ ] Loading animations
+- [x] Loading animations
 
 ### 4.4 Paywall Screen
 - [ ] Product display
@@ -101,9 +101,9 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 - [ ] Terms and privacy links
 
 ### 4.5 Style Gallery
-- [ ] Credits balance header
-- [ ] Style grid layout
-- [ ] Locked/unlocked states
+- [x] Credits balance header
+- [x] Style grid layout
+- [x] Locked/unlocked states
 - [ ] Purchase flow integration
 - [ ] Apply style functionality
 
@@ -114,9 +114,9 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 - [ ] Confirmation flow
 
 ### 4.7 Home Screen
-- [ ] Current portrait display
-- [ ] Quick actions (change photo/style)
-- [ ] Credits display
+- [x] Current portrait display
+- [x] Quick actions (change photo/style)
+- [x] Credits display
 - [ ] Settings access
 
 ---
