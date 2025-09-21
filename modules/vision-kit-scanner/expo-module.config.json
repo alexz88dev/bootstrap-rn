@@ -1,8 +1,0 @@
-{
-  "ios": {
-    "infoPlist": {
-      "NSCameraUsageDescription": "This app uses the camera to scan documents and extract text."
-    }
-  },
-  "android": {}
-}

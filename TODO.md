@@ -16,15 +16,15 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 ### 1.1 Clean AllerScan References [COMPLETED]
 - [x] Update package.json name and metadata
 - [x] Update app.json with MyCar Portrait details
-- [ ] Clean up existing components not needed
+- [x] Clean up existing components not needed
 - [x] Update environment configurations
 - [ ] Update EAS configuration for new app
 
 ### 1.2 Project Dependencies
-- [ ] Add Supabase client (`@supabase/supabase-js`)
-- [ ] Add RevenueCat SDK (`react-native-purchases`)
+- [x] Add Supabase client (`@supabase/supabase-js`)
+- [x] Add RevenueCat SDK (`react-native-purchases`)
 - [ ] Add image manipulation libraries
-- [ ] Add required Expo modules (camera, image-picker, in-app-purchases)
+- [x] Add required Expo modules (camera, image-picker, in-app-purchases)
 - [ ] Configure TypeScript strict mode
 
 ---
