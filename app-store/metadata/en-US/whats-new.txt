@@ -1,0 +1,18 @@
+Version 1.0.0 - Initial Release
+
+🚗 Welcome to MyCar Portrait!
+
+We're excited to launch the first version of MyCar Portrait, bringing your car to your iPhone and CarPlay displays.
+
+WHAT'S NEW:
+• AI-powered background removal
+• Automatic license plate blurring for privacy
+• CarPlay widget support
+• 12+ premium styles to choose from
+• One-time unlock with credits system
+• iPhone lock screen and home screen widgets
+• Optimized processing under 3 seconds
+
+Thank you for choosing MyCar Portrait. We're constantly working to improve your experience. Have feedback? Contact us at support@mycarportrait.app
+
+Drive safe and enjoy your personalized car portrait!

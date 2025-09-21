@@ -18,12 +18,12 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 - [x] Update app.json with MyCar Portrait details
 - [x] Clean up existing components not needed
 - [x] Update environment configurations
-- [ ] Update EAS configuration for new app
+- [x] Update EAS configuration for new app
 
 ### 1.2 Project Dependencies
 - [x] Add Supabase client (`@supabase/supabase-js`)
 - [x] Add RevenueCat SDK (`react-native-purchases`)
-- [ ] Add image manipulation libraries
+- [x] Add image manipulation libraries
 - [x] Add required Expo modules (camera, image-picker, in-app-purchases)
 - [x] Configure TypeScript strict mode
 
@@ -180,29 +180,29 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 
 ## Phase 8: Testing & QA
 ### 8.1 Critical Tests
-- [ ] License plate blurring accuracy
-- [ ] Face detection and privacy
-- [ ] IAP purchase flow
-- [ ] Receipt validation
-- [ ] Credit transactions
-- [ ] Widget display on CarPlay
-- [ ] Performance benchmarks
-- [ ] Rate limiting
+- [x] License plate blurring accuracy
+- [x] Face detection and privacy
+- [x] IAP purchase flow
+- [x] Receipt validation
+- [x] Credit transactions
+- [x] Widget display on CarPlay
+- [x] Performance benchmarks
+- [x] Rate limiting
 
 ### 8.2 Device Testing
-- [ ] iPhone models (12-16)
-- [ ] CarPlay simulators
+- [x] iPhone models (12-16)
+- [x] CarPlay simulators
 - [ ] Real CarPlay hardware
-- [ ] Different iOS versions (17+)
+- [x] Different iOS versions (17+)
 
 ---
 
 ## Phase 9: App Store Preparation
 ### 9.1 ASO Content
-- [ ] App name finalization
-- [ ] Keywords research
-- [ ] Description copywriting
-- [ ] Localization (EN, RO)
+- [x] App name finalization
+- [x] Keywords research
+- [x] Description copywriting
+- [x] Localization (EN, RO)
 
 ### 9.2 Store Assets
 - [ ] App icon design
@@ -211,10 +211,10 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 - [ ] Feature graphics
 
 ### 9.3 Compliance
-- [ ] Privacy policy
-- [ ] Terms of service
-- [ ] Age rating
-- [ ] Export compliance
+- [x] Privacy policy
+- [x] Terms of service
+- [x] Age rating
+- [x] Export compliance
 
 ---
 

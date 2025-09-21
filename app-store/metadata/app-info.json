@@ -1,0 +1,109 @@
+{
+  "app_name": "MyCar Portrait: CarPlay Widget",
+  "subtitle": "Your car on iPhone & CarPlay",
+  "privacy_policy_url": "https://mycarportrait.app/privacy",
+  "terms_of_use_url": "https://mycarportrait.app/terms",
+  "support_url": "https://mycarportrait.app/support",
+  "marketing_url": "https://mycarportrait.app",
+  "copyright": "© 2025 MyCar Portrait. All rights reserved.",
+  
+  "categories": {
+    "primary": "Lifestyle",
+    "secondary": "Photo & Video"
+  },
+  
+  "age_rating": {
+    "rating": "4+",
+    "reasons": []
+  },
+  
+  "languages": [
+    "en-US",
+    "ro"
+  ],
+  
+  "screenshots": {
+    "iphone_6_7": [
+      "01-home-screen.png",
+      "02-upload-photo.png", 
+      "03-processing.png",
+      "04-preview-widget.png",
+      "05-style-gallery.png",
+      "06-carplay-display.png",
+      "07-widget-setup.png",
+      "08-final-result.png"
+    ],
+    "iphone_6_5": [
+      "01-home-screen.png",
+      "02-upload-photo.png",
+      "03-processing.png",
+      "04-preview-widget.png",
+      "05-style-gallery.png",
+      "06-carplay-display.png",
+      "07-widget-setup.png",
+      "08-final-result.png"
+    ],
+    "ipad_pro_12_9": [
+      "01-home-ipad.png",
+      "02-gallery-ipad.png",
+      "03-widget-ipad.png"
+    ]
+  },
+  
+  "app_preview_video": {
+    "enabled": false,
+    "url": null
+  },
+  
+  "in_app_purchases": [
+    {
+      "reference_name": "Unlock Plus",
+      "product_id": "unlock_plus_899",
+      "type": "non_consumable",
+      "price_tier": "tier_9",
+      "display_name": "Unlock Widget + 100 Credits",
+      "description": "Unlock the full MyCar Portrait experience with widget support, 3 included styles, and 100 credits for additional styles."
+    },
+    {
+      "reference_name": "40 Credits",
+      "product_id": "credits_40_399",
+      "type": "consumable",
+      "price_tier": "tier_4",
+      "display_name": "40 Credits",
+      "description": "Get 40 credits to unlock more premium styles for your car portrait."
+    },
+    {
+      "reference_name": "120 Credits",
+      "product_id": "credits_120_999",
+      "type": "consumable",
+      "price_tier": "tier_10",
+      "display_name": "120 Credits Pack",
+      "description": "Get 120 credits to unlock 4 premium styles. Best value!"
+    },
+    {
+      "reference_name": "260 Credits",
+      "product_id": "credits_260_1999",
+      "type": "consumable",
+      "price_tier": "tier_20",
+      "display_name": "260 Credits Bundle",
+      "description": "Get 260 credits to unlock 8+ premium styles. Great value!"
+    },
+    {
+      "reference_name": "520 Credits",
+      "product_id": "credits_520_3499",
+      "type": "consumable",
+      "price_tier": "tier_35",
+      "display_name": "520 Credits Mega Pack",
+      "description": "Get 520 credits for unlimited style unlocking. Best deal!"
+    }
+  ],
+  
+  "app_store_connect": {
+    "bundle_id": "com.alexzamfir.mycarportrait",
+    "sku": "MYCARPORTRAIT001",
+    "team_id": "YOUR_TEAM_ID",
+    "app_id": "YOUR_APP_ID"
+  },
+  
+  "review_notes": "Test account available upon request. The app uses AI to process car photos and remove backgrounds. All processing happens on secure servers with automatic deletion after processing. License plates are automatically blurred for privacy. CarPlay widget requires iOS 14+ and CarPlay compatible vehicle."
+}
