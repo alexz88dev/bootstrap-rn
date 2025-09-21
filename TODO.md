@@ -25,7 +25,7 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 - [x] Add RevenueCat SDK (`react-native-purchases`)
 - [ ] Add image manipulation libraries
 - [x] Add required Expo modules (camera, image-picker, in-app-purchases)
-- [ ] Configure TypeScript strict mode
+- [x] Configure TypeScript strict mode
 
 ---
 
