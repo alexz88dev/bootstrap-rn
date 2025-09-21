@@ -18,6 +18,10 @@ Common tasks and quick answers.
 
 When and how to use custom channels for feature branches, A/B testing, and more.
 
+### **[agents.md](./agents.md)** - MyCar Portrait Implementation Guide 🚗
+
+Complete AI agent guide for building the MyCar Portrait app with Supabase backend.
+
 ## 🎯 Main Commands
 
 ```bash
