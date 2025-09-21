@@ -119,7 +119,10 @@ async function interactiveBuild() {
       summaryData["Channel"] = customChannel;
     }
 
-    if ((profile === "staging" || profile === "production") && location === "cloud") {
+    if (
+      (profile === "staging" || profile === "production") &&
+      location === "cloud"
+    ) {
       summaryData["Auto-submit"] = "Yes (after build)";
     }
 
