@@ -3,6 +3,7 @@
 ## Project Overview
 
 **MyCar Portrait** is a premium iOS app that allows users to:
+
 1. Upload a photo of their car
 2. Automatically blur license plates and faces for privacy
 3. Remove the background using AI
@@ -37,6 +38,7 @@
 ### Phase 1: Backend Setup (Supabase)
 
 #### Task 1.1: Database Schema
+
 Create the following tables with RLS policies:
 
 ```sql
@@ -91,27 +93,35 @@ CREATE TABLE processing_limits (
 ```
 
 **RLS Policies Required:**
+
 - Users can only access their own records
 - Service role for Edge Functions to manage all tables
 
 #### Task 1.2: Seed Styles Data
+
 Populate the styles table with:
+
 - **Included (free with unlock):** Minimal, Dark Gradient, Asphalt
 - **Locked (30 credits each):** Neon, Blueprint, Frosted Glass, Sunset, Carbon Weave, Bokeh Night, Garage Glow, Cinematic Rain, Retro Film
 
 #### Task 1.3: Storage Buckets
+
 Create storage bucket:
+
 - `portraits/` - Public read, write only via Edge Functions
 - Store final 1024x1024 PNGs only (< 1MB)
 
 ### Phase 2: Edge Functions (Supabase)
 
 #### Task 2.1: processCutout Function
+
 ```typescript
 // Input: { imageUrl or base64, userId }
 // Output: { portrait_url, processingMs }
 ```
+
 Requirements:
+
 - Detect and blur license plates (priority 1)
 - Detect and blur faces if present
 - Call AI provider for background removal
@@ -120,22 +130,28 @@ Requirements:
 - Implement rate limiting (5/day pre-unlock, 10/day post-unlock)
 
 #### Task 2.2: iapGrant Function
+
 ```typescript
 // Triggered by RevenueCat webhook or client receipt
 // Verifies purchase and grants credits/unlock
 ```
+
 Requirements:
+
 - Validate receipt authenticity
 - For unlock_plus_899: Grant 100 credits + mark user as unlocked
 - For credit packs: Grant appropriate credits
 - Atomic transaction with credits_ledger
 
 #### Task 2.3: creditsSpend Function
+
 ```typescript
 // Input: { userId, styleId }
 // Output: { success, balance_after }
 ```
+
 Requirements:
+
 - Atomic transaction
 - Check balance >= 30
 - Deduct credits from ledger
@@ -145,6 +161,7 @@ Requirements:
 ### Phase 3: React Native App
 
 #### Task 3.1: Project Setup
+
 - Initialize new Expo project (SDK 54)
 - Configure EAS Build profiles
 - Set up TypeScript
@@ -159,23 +176,27 @@ Requirements:
 #### Task 3.2: Core Screens
 
 **1. Onboarding Screen**
+
 - "Your car, your CarPlay widget" messaging
 - Get Started button
 - Privacy disclaimer
 
 **2. Photo Upload Screen**
+
 - Camera/Library picker
 - Upload progress indicator
 - Error handling for poor quality photos
 - Tips: "Best results with ¾ angle, good lighting"
 
 **3. Preview Screen** (Conversion Engine)
+
 - Display cutout in CarPlay widget frame mockup
 - Cycle through 3 included styles
 - Loading state during processing
 - Unlock CTA: "$8.99 - Includes Widget + 3 Styles + 100 Credits"
 
 **4. Paywall Screen**
+
 - Single clean design
 - Clear value proposition
 - Purchase button
@@ -183,6 +204,7 @@ Requirements:
 - "Not now" option
 
 **5. Style Gallery**
+
 - Credits balance header
 - Grid of available styles
 - Locked styles show credit cost (30)
@@ -190,11 +212,13 @@ Requirements:
 - Buy more credits CTA
 
 **6. Widget Setup Guide**
+
 - Step-by-step instructions
 - Screenshots
 - "I've added it" confirmation
 
 **7. Home Screen**
+
 - Current portrait display
 - Change Photo action
 - Change Style action
@@ -202,6 +226,7 @@ Requirements:
 - Buy Credits button
 
 #### Task 3.3: Supabase Integration
+
 - Authentication (anonymous or Apple Sign In)
 - Image upload to Edge Functions
 - Credits management
@@ -209,6 +234,7 @@ Requirements:
 - Asset management
 
 #### Task 3.4: IAP Integration
+
 - Configure RevenueCat SDK
 - Product IDs:
   - unlock_plus_899
@@ -221,7 +247,9 @@ Requirements:
 - Receipt validation
 
 #### Task 3.5: Push Notifications
+
 Schedule re-engagement notifications:
+
 - +24h: "Your car portrait is waiting"
 - +72h: "Add your car as a widget"
 - +7d: "Turn iPhone & CarPlay into your garage"
@@ -230,12 +258,14 @@ Schedule re-engagement notifications:
 ### Phase 4: iOS Native Components
 
 #### Task 4.1: WidgetKit Extension
+
 - SwiftUI widget supporting systemSmall
 - Read portrait.png from App Group
 - Static snapshot (no animation)
 - Works on iPhone lock screen and CarPlay
 
 #### Task 4.2: App Group Configuration
+
 - Configure shared container
 - Save portrait.png from React Native
 - Read from Widget Extension
@@ -243,12 +273,15 @@ Schedule re-engagement notifications:
 ### Phase 5: Analytics Implementation
 
 #### Task 5.1: Firebase Analytics Setup
+
 - Initialize SDK
 - Configure auto-tracking
 - Custom event implementation
 
 #### Task 5.2: Event Tracking
+
 Implement all required events with proper parameters:
+
 1. `open_first` - source, ad_group, keyword
 2. `photo_uploaded` - from, file_size_kb, plate_detected
 3. `cutout_ready` - latency_ms, mask_confidence
@@ -264,6 +297,7 @@ Implement all required events with proper parameters:
 ### Phase 6: App Store Preparation
 
 #### Task 6.1: ASO Content
+
 - App Name: "MyCar Portrait: CarPlay Widget"
 - Subtitle: "Your car on iPhone & CarPlay"
 - Keywords: carplay,car,widget,photo,background,cutout,portrait,lockscreen
@@ -271,6 +305,7 @@ Implement all required events with proper parameters:
 - Localization: EN, RO initially
 
 #### Task 6.2: Store Assets
+
 - Screenshots (iPhone + CarPlay mockups)
 - App icon
 - Preview video (optional)
@@ -278,13 +313,16 @@ Implement all required events with proper parameters:
 - User photos only
 
 #### Task 6.3: Apple Search Ads
+
 Configure 2 ad groups:
+
 1. CarPlay Widget keywords
 2. Photo Cutout keywords
 
 ### Phase 7: Testing & QA
 
 #### Critical Test Cases:
+
 1. **Privacy:** Verify plate/face blurring works
 2. **Performance:** Test on slow networks
 3. **IAP:** Purchase, restore, credit spending
@@ -297,6 +335,7 @@ Configure 2 ad groups:
 ### Phase 8: Launch Preparation
 
 #### Pre-Launch Checklist:
+
 - [ ] Supabase production environment configured
 - [ ] Edge Functions deployed and tested
 - [ ] IAP products approved by Apple
@@ -310,6 +349,7 @@ Configure 2 ad groups:
 ## Success Metrics
 
 ### Target KPIs:
+
 - CPC ≤ $0.60
 - Tap→Install ≥ 40%
 - Install→Purchase ≥ 15%
@@ -319,6 +359,7 @@ Configure 2 ad groups:
 - CPA ≤ $6
 
 ### Performance Targets:
+
 - Image processing P50 < 2.5s
 - Preview visible < 6s from upload
 - Widget image < 1MB
@@ -327,6 +368,7 @@ Configure 2 ad groups:
 ## Compliance Requirements
 
 ### Non-Negotiable:
+
 1. **Always blur license plates** before any processing
 2. **No OEM logos/renders** in app or store
 3. **User photos only** for all media
@@ -338,6 +380,7 @@ Configure 2 ad groups:
 ## Development Guidelines
 
 ### Code Quality:
+
 - TypeScript for all JS/TS code
 - Swift for iOS native components
 - Proper error handling throughout
@@ -346,6 +389,7 @@ Configure 2 ad groups:
 - Integration tests for IAP flow
 
 ### Architecture Principles:
+
 - Offline-first where possible
 - Optimistic UI updates
 - Graceful degradation
@@ -353,6 +397,7 @@ Configure 2 ad groups:
 - Accessibility support
 
 ### Security:
+
 - No sensitive data in logs
 - Secure storage for receipts
 - HTTPS only for all requests
@@ -364,23 +409,27 @@ Configure 2 ad groups:
 When implementing any component:
 
 1. **Read First:**
+
    - This entire agents.md file
    - The business requirements above
    - Any existing code in the project
 
 2. **Follow Standards:**
+
    - Use Bun (not npm) for package management
    - Use TypeScript with strict mode
    - Follow React Native best practices
    - Implement proper error boundaries
 
 3. **Test Everything:**
+
    - Manual testing on simulator
    - Edge cases (no network, bad images)
    - IAP sandbox testing
    - Widget on actual device
 
 4. **Document Changes:**
+
    - Update relevant documentation
    - Add inline code comments
    - Create migration guides if needed
@@ -394,6 +443,7 @@ When implementing any component:
 ## Questions to Resolve
 
 Before starting implementation, clarify:
+
 1. Which AI provider for background removal? (SeedDream v4, Remove.bg, etc.)
 2. RevenueCat or direct StoreKit implementation?
 3. Mixpanel or PostHog for analytics?
