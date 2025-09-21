@@ -117,7 +117,7 @@ Transform the existing AllerScan bootstrap into MyCar Portrait - a premium iOS a
 - [x] Current portrait display
 - [x] Quick actions (change photo/style)
 - [x] Credits display
-- [ ] Settings access
+- [x] Settings access
 
 ---
 
