@@ -67,7 +67,7 @@ export default function UploadScreen() {
             
             <ThemedText style={styles.uploadDescription}>
               Take a photo or choose from your gallery.{'\n'}
-              We'll automatically blur license plates and remove the background.
+              We’ll automatically blur license plates and remove the background.
             </ThemedText>
 
             <View style={styles.buttonContainer}>
@@ -190,7 +190,7 @@ export default function UploadScreen() {
               Processing Failed
             </ThemedText>
             <ThemedText style={styles.errorDescription}>
-              We couldn't process your photo. Please try again with a different image.
+              We couldn’t process your photo. Please try again with a different image.
             </ThemedText>
             <Pressable style={styles.retryButton} onPress={() => setProcessingState('idle')}>
               <ThemedText style={styles.retryButtonText}>Try Again</ThemedText>
