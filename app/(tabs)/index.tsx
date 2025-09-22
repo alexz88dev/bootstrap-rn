@@ -1,35 +1,34 @@
-import { useCallback, useMemo } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+import { useCallback, useMemo } from "react";
 import {
-  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
   Share,
   StyleSheet,
   View,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/native';
+} from "react-native";
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { MyCarConfig } from '@/config/mycar-config';
-import { useApp } from '@/contexts/AppContext';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { MyCarConfig } from "@/config/mycar-config";
+import { useApp } from "@/contexts/AppContext";
 
 const styleGradients: Record<string, [string, string]> = {
-  minimal: ['#F8FAFC', '#E2E8F0'],
-  dark_gradient: ['#0F172A', '#1E293B'],
-  asphalt: ['#2C3E50', '#34495E'],
-  neon: ['#1D2671', '#C33764'],
-  blueprint: ['#0F2027', '#203A43'],
-  frosted_glass: ['#83A4D4', '#B6FBFF'],
-  sunset: ['#ff6e7f', '#bfe9ff'],
-  carbon_weave: ['#232526', '#414345'],
-  bokeh_night: ['#000428', '#004e92'],
-  garage_glow: ['#1f4037', '#99f2c8'],
-  cinematic_rain: ['#3a7bd5', '#3a6073'],
-  retro_film: ['#8360c3', '#2ebf91'],
+  minimal: ["#F8FAFC", "#E2E8F0"],
+  dark_gradient: ["#0F172A", "#1E293B"],
+  asphalt: ["#2C3E50", "#34495E"],
+  neon: ["#1D2671", "#C33764"],
+  blueprint: ["#0F2027", "#203A43"],
+  frosted_glass: ["#83A4D4", "#B6FBFF"],
+  sunset: ["#ff6e7f", "#bfe9ff"],
+  carbon_weave: ["#232526", "#414345"],
+  bokeh_night: ["#000428", "#004e92"],
+  garage_glow: ["#1f4037", "#99f2c8"],
+  cinematic_rain: ["#3a7bd5", "#3a6073"],
+  retro_film: ["#8360c3", "#2ebf91"],
 };
 
 function getStyleGradient(styleId?: string): [string, string] {
@@ -68,31 +67,35 @@ export default function HomeScreen() {
   const styleNameMap = useMemo(() => {
     const map = new Map<string, string>();
 
-    MyCarConfig.styles.free.forEach(style => {
+    MyCarConfig.styles.free.forEach((style) => {
       map.set(style.id, style.name);
     });
 
-    MyCarConfig.styles.premium.forEach(style => {
+    MyCarConfig.styles.premium.forEach((style) => {
       map.set(style.id, style.name);
     });
 
-    availableStyles.forEach(style => {
+    availableStyles.forEach((style) => {
       map.set(style.style_id, style.title);
     });
 
     return map;
   }, [availableStyles]);
 
-  const currentStyleName = styleNameMap.get(currentStyleId || 'minimal') || 'Minimal';
+  const currentStyleName =
+    styleNameMap.get(currentStyleId || "minimal") || "Minimal";
 
   const unlockedPremiumCount = useMemo(() => {
-    const freeStyleIds = new Set(MyCarConfig.styles.free.map(style => style.id));
-    return unlockedStyles.filter(styleId => !freeStyleIds.has(styleId)).length;
+    const freeStyleIds = new Set(
+      MyCarConfig.styles.free.map((style) => style.id)
+    );
+    return unlockedStyles.filter((styleId) => !freeStyleIds.has(styleId))
+      .length;
   }, [unlockedStyles]);
 
   const totalStylesOwned = useMemo(() => {
     const unique = new Set([
-      ...MyCarConfig.styles.free.map(style => style.id),
+      ...MyCarConfig.styles.free.map((style) => style.id),
       ...unlockedStyles,
     ]);
     return unique.size;
@@ -102,26 +105,26 @@ export default function HomeScreen() {
     MyCarConfig.styles.free.length + MyCarConfig.styles.premium.length;
 
   const handleUploadPress = () => {
-    router.push('/(tabs)/upload');
+    router.push("/(tabs)/upload");
   };
 
   const handleChangeStyle = () => {
-    router.push('/(tabs)/gallery');
+    router.push("/(tabs)/gallery");
   };
 
   const handlePreview = () => {
-    router.push('/preview');
+    router.push("/preview");
   };
 
   const handleUnlockPress = async () => {
     const success = await purchaseUnlock();
     if (!success) {
-      router.push('/paywall');
+      router.push("/paywall");
     }
   };
 
   const handleAddCredits = () => {
-    router.push('/paywall');
+    router.push("/paywall");
   };
 
   const handleShare = async () => {
@@ -130,23 +133,25 @@ export default function HomeScreen() {
     try {
       await Share.share({
         url: currentPortraitUrl,
-        message: 'Check out my car portrait from MyCar Portrait! 🚗✨',
+        message: "Check out my car portrait from MyCar Portrait! 🚗✨",
       });
     } catch (error) {
-      console.warn('Share failed', error);
+      console.warn("Share failed", error);
     }
   };
 
-  const gradient = getStyleGradient(currentStyleId || 'minimal');
+  const gradient = getStyleGradient(currentStyleId || "minimal");
 
-  if (isLoading) {
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <ThemedText style={styles.loadingText}>Preparing your garage…</ThemedText>
-      </ThemedView>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <ThemedView style={styles.loadingContainer}>
+  //       <ActivityIndicator size="large" color="#007AFF" />
+  //       <ThemedText style={styles.loadingText}>
+  //         Preparing your garage…
+  //       </ThemedText>
+  //     </ThemedView>
+  //   );
+  // }
 
   return (
     <ScrollView
@@ -172,15 +177,19 @@ export default function HomeScreen() {
             No Car Portrait Yet
           </ThemedText>
           <ThemedText style={styles.emptyDescription}>
-            Upload a photo of your car to create your personalized widget for iPhone
-            and CarPlay.
+            Upload a photo of your car to create your personalized widget for
+            iPhone and CarPlay.
           </ThemedText>
           <Pressable style={styles.primaryButton} onPress={handleUploadPress}>
             <IconSymbol name="camera.fill" size={20} color="#FFF" />
-            <ThemedText style={styles.primaryButtonText}>Upload Photo</ThemedText>
+            <ThemedText style={styles.primaryButtonText}>
+              Upload Photo
+            </ThemedText>
           </Pressable>
           <Pressable style={styles.secondaryButton} onPress={handlePreview}>
-            <ThemedText style={styles.secondaryButtonText}>See how it looks</ThemedText>
+            <ThemedText style={styles.secondaryButtonText}>
+              See how it looks
+            </ThemedText>
           </Pressable>
         </ThemedView>
       ) : (
@@ -191,7 +200,9 @@ export default function HomeScreen() {
             </ThemedText>
             <View style={styles.styleBadge}>
               <IconSymbol name="paintbrush.pointed" size={16} color="#FFF" />
-              <ThemedText style={styles.styleBadgeText}>{currentStyleName}</ThemedText>
+              <ThemedText style={styles.styleBadgeText}>
+                {currentStyleName}
+              </ThemedText>
             </View>
           </View>
 
@@ -224,7 +235,7 @@ export default function HomeScreen() {
             </Pressable>
             <Pressable
               style={styles.actionButton}
-              onPress={() => router.push('/widget-setup')}
+              onPress={() => router.push("/widget-setup")}
             >
               <IconSymbol name="apps.iphone" size={18} color="#007AFF" />
               <ThemedText style={styles.actionText}>Widget Setup</ThemedText>
@@ -234,7 +245,11 @@ export default function HomeScreen() {
               onPress={handleShare}
               disabled={!currentPortraitUrl}
             >
-              <IconSymbol name="square.and.arrow.up" size={18} color="#007AFF" />
+              <IconSymbol
+                name="square.and.arrow.up"
+                size={18}
+                color="#007AFF"
+              />
               <ThemedText style={styles.actionText}>Share</ThemedText>
             </Pressable>
           </View>
@@ -261,7 +276,10 @@ export default function HomeScreen() {
               <IconSymbol name="star.fill" size={20} color="#FACC15" />
               <ThemedText style={styles.creditsLabel}>Credits</ThemedText>
             </View>
-            <Pressable style={styles.addCreditsButton} onPress={handleAddCredits}>
+            <Pressable
+              style={styles.addCreditsButton}
+              onPress={handleAddCredits}
+            >
               <IconSymbol name="plus.circle.fill" size={18} color="#FFF" />
               <ThemedText style={styles.addCreditsText}>Buy More</ThemedText>
             </Pressable>
@@ -272,9 +290,9 @@ export default function HomeScreen() {
           <ThemedText style={styles.creditsSubtext}>
             {unlockedPremiumCount > 0
               ? `${unlockedPremiumCount} premium style${
-                  unlockedPremiumCount > 1 ? 's' : ''
+                  unlockedPremiumCount > 1 ? "s" : ""
                 } unlocked`
-              : 'Use credits to unlock premium styles'}
+              : "Use credits to unlock premium styles"}
           </ThemedText>
         </ThemedView>
       )}
@@ -287,7 +305,11 @@ export default function HomeScreen() {
           </ThemedText>
           {isWidgetConfigured && (
             <View style={styles.widgetBadge}>
-              <IconSymbol name="checkmark.seal.fill" size={16} color="#34C759" />
+              <IconSymbol
+                name="checkmark.seal.fill"
+                size={16}
+                color="#34C759"
+              />
               <ThemedText style={styles.widgetBadgeText}>Active</ThemedText>
             </View>
           )}
@@ -295,36 +317,36 @@ export default function HomeScreen() {
 
         <ThemedText style={styles.widgetDescription}>
           {isWidgetConfigured
-            ? 'Your widget is live. It will refresh automatically with new portraits and styles.'
-            : 'Add the widget to your iPhone and CarPlay to showcase your ride everywhere.'}
+            ? "Your widget is live. It will refresh automatically with new portraits and styles."
+            : "Add the widget to your iPhone and CarPlay to showcase your ride everywhere."}
         </ThemedText>
 
         <View style={styles.widgetStatusRow}>
           <View style={styles.statusPill}>
             <IconSymbol
-              name={isWidgetConfigured ? 'checkmark.circle.fill' : 'circle'}
+              name={isWidgetConfigured ? "checkmark.circle.fill" : "circle"}
               size={16}
-              color={isWidgetConfigured ? '#34C759' : '#9CA3AF'}
+              color={isWidgetConfigured ? "#34C759" : "#9CA3AF"}
             />
             <ThemedText style={styles.statusPillText}>
-              iPhone {isWidgetConfigured ? 'Widget Ready' : 'Setup Required'}
+              iPhone {isWidgetConfigured ? "Widget Ready" : "Setup Required"}
             </ThemedText>
           </View>
           <View style={styles.statusPill}>
             <IconSymbol
-              name={isCarPlayConnected ? 'car.fill' : 'car'}
+              name={isCarPlayConnected ? "car.fill" : "car"}
               size={16}
-              color={isCarPlayConnected ? '#2563EB' : '#9CA3AF'}
+              color={isCarPlayConnected ? "#2563EB" : "#9CA3AF"}
             />
             <ThemedText style={styles.statusPillText}>
-              CarPlay {isCarPlayConnected ? 'Connected' : 'Pending'}
+              CarPlay {isCarPlayConnected ? "Connected" : "Pending"}
             </ThemedText>
           </View>
         </View>
 
         <Pressable
           style={styles.widgetButton}
-          onPress={() => router.push('/widget-setup')}
+          onPress={() => router.push("/widget-setup")}
         >
           <IconSymbol name="hand.tap.fill" size={18} color="#FFF" />
           <ThemedText style={styles.widgetButtonText}>
@@ -344,7 +366,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.stylesRow}>
-          {MyCarConfig.styles.free.map(style => (
+          {MyCarConfig.styles.free.map((style) => (
             <View key={style.id} style={styles.styleChip}>
               <View
                 style={[
@@ -427,19 +449,19 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
   },
   loadingText: {
     marginTop: 12,
-    color: '#6B7280',
+    color: "#6B7280",
   },
   header: {
     paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 24,
-    alignItems: 'center',
+    alignItems: "center",
   },
   title: {
     fontSize: 32,
@@ -447,141 +469,141 @@ const styles = StyleSheet.create({
   },
   tagline: {
     fontSize: 16,
-    color: '#6B7280',
+    color: "#6B7280",
   },
   emptyState: {
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 24,
     borderRadius: 20,
-    backgroundColor: '#F8FAFC',
-    alignItems: 'center',
+    backgroundColor: "#F8FAFC",
+    alignItems: "center",
     gap: 16,
   },
   placeholderContainer: {
     width: 160,
     height: 160,
     borderRadius: 80,
-    backgroundColor: '#E2E8F0',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#E2E8F0",
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyTitle: {
     fontSize: 24,
   },
   emptyDescription: {
     fontSize: 15,
-    color: '#4B5563',
-    textAlign: 'center',
+    color: "#4B5563",
+    textAlign: "center",
     lineHeight: 22,
   },
   primaryButton: {
-    flexDirection: 'row',
-    backgroundColor: '#2563EB',
+    flexDirection: "row",
+    backgroundColor: "#2563EB",
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     gap: 8,
   },
   primaryButtonText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 17,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   secondaryButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
   secondaryButtonText: {
-    color: '#2563EB',
-    fontWeight: '600',
+    color: "#2563EB",
+    fontWeight: "600",
   },
   portraitSection: {
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 24,
     borderRadius: 24,
-    backgroundColor: '#FFF',
-    shadowColor: '#000',
+    backgroundColor: "#FFF",
+    shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 8 },
     shadowRadius: 20,
     elevation: 6,
   },
   portraitHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   sectionLabel: {
     fontSize: 18,
-    color: '#111827',
+    color: "#111827",
   },
   styleBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: '#2563EB',
+    backgroundColor: "#2563EB",
   },
   styleBadgeText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   portraitFrame: {
-    width: '100%',
+    width: "100%",
     aspectRatio: 1,
     borderRadius: 20,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 16,
   },
   portraitGradient: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 12,
     borderRadius: 20,
   },
   portraitImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 16,
   },
   actionRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 12,
   },
   actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: "#E5E7EB",
   },
   actionText: {
-    color: '#1D4ED8',
-    fontWeight: '600',
+    color: "#1D4ED8",
+    fontWeight: "600",
   },
   unlockBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 18,
     borderRadius: 20,
-    backgroundColor: '#FEF3C7',
+    backgroundColor: "#FEF3C7",
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: "#FDE68A",
     gap: 16,
   },
   unlockContent: {
@@ -593,66 +615,66 @@ const styles = StyleSheet.create({
   },
   unlockDescription: {
     fontSize: 14,
-    color: '#92400E',
+    color: "#92400E",
   },
   unlockPrice: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#B45309',
+    fontWeight: "700",
+    color: "#B45309",
   },
   creditsCard: {
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 24,
     borderRadius: 24,
-    backgroundColor: '#111827',
+    backgroundColor: "#111827",
     gap: 16,
   },
   creditsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   creditsBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   creditsLabel: {
-    color: '#FACC15',
-    fontWeight: '600',
+    color: "#FACC15",
+    fontWeight: "600",
   },
   addCreditsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
-    backgroundColor: '#2563EB',
+    backgroundColor: "#2563EB",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 12,
   },
   addCreditsText: {
-    color: '#FFF',
-    fontWeight: '600',
+    color: "#FFF",
+    fontWeight: "600",
   },
   creditsValue: {
     fontSize: 42,
-    color: '#FFF',
+    color: "#FFF",
   },
   creditsSubtext: {
-    color: '#E5E7EB',
+    color: "#E5E7EB",
   },
   widgetCard: {
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 24,
     borderRadius: 24,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: "#F8FAFC",
     gap: 16,
   },
   widgetHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   widgetTitle: {
@@ -660,62 +682,62 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   widgetBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 999,
-    backgroundColor: 'rgba(52,199,89,0.15)',
+    backgroundColor: "rgba(52,199,89,0.15)",
   },
   widgetBadgeText: {
-    color: '#166534',
+    color: "#166534",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   widgetDescription: {
-    color: '#4B5563',
+    color: "#4B5563",
     lineHeight: 20,
   },
   widgetStatusRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
   },
   statusPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: "#E2E8F0",
   },
   statusPillText: {
-    color: '#1F2937',
+    color: "#1F2937",
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   widgetButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
     borderRadius: 12,
-    backgroundColor: '#2563EB',
+    backgroundColor: "#2563EB",
     paddingVertical: 12,
   },
   widgetButtonText: {
-    color: '#FFF',
-    fontWeight: '600',
+    color: "#FFF",
+    fontWeight: "600",
   },
   stylesCard: {
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 24,
     borderRadius: 24,
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
     shadowOpacity: 0.04,
     shadowOffset: { width: 0, height: 10 },
     shadowRadius: 20,
@@ -723,26 +745,26 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   stylesHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   stylesTitle: {
     fontSize: 16,
   },
   stylesCount: {
-    color: '#6B7280',
+    color: "#6B7280",
     fontSize: 13,
   },
   stylesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 16,
   },
   styleChip: {
-    width: '30%',
+    width: "30%",
     minWidth: 100,
-    alignItems: 'center',
+    alignItems: "center",
     gap: 8,
   },
   stylePreview: {
@@ -751,29 +773,29 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   styleName: {
-    fontWeight: '600',
-    color: '#1F2937',
+    fontWeight: "600",
+    color: "#1F2937",
   },
   styleTag: {
     fontSize: 12,
-    color: '#10B981',
-    fontWeight: '600',
+    color: "#10B981",
+    fontWeight: "600",
   },
   stylesHint: {
-    color: '#4B5563',
+    color: "#4B5563",
   },
   stylesButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
-    backgroundColor: '#111827',
+    backgroundColor: "#111827",
     borderRadius: 14,
     paddingVertical: 12,
   },
   stylesButtonText: {
-    color: '#FFF',
-    fontWeight: '600',
+    color: "#FFF",
+    fontWeight: "600",
   },
   features: {
     marginHorizontal: 24,
@@ -782,31 +804,31 @@ const styles = StyleSheet.create({
   featuresTitle: {
     fontSize: 20,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   featureGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 16,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   featureItem: {
-    width: '47%',
-    alignItems: 'center',
+    width: "47%",
+    alignItems: "center",
     padding: 18,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: "#F3F4F6",
     borderRadius: 16,
     gap: 8,
   },
   featureText: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
   },
   featureSubtext: {
     fontSize: 13,
-    color: '#6B7280',
-    textAlign: 'center',
+    color: "#6B7280",
+    textAlign: "center",
     lineHeight: 18,
   },
 });
