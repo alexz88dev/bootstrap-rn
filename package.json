@@ -9,7 +9,9 @@
     "version": "node ./scripts/version.js",
     "clean": "rm -rf node_modules ios/build android/build .expo",
     "reset": "node ./scripts/reset-project.js",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@bittingz/expo-widgets": "^3.0.2",

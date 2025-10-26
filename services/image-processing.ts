@@ -3,18 +3,16 @@
  * Handles image selection, upload, and AI-powered processing with Seedream 4.0
  */
 
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import * as ImageManipulator from 'expo-image-manipulator';
-import { Camera } from 'expo-camera';
-import { Alert, Platform } from 'react-native';
-import { SupabaseService } from './supabase';
-import { seedreamAI, SEEDREAM_TRANSFORMS } from './seedream-ai';
-import { MyCarConfig } from '@/config/mycar-config';
-import { getEnvironmentConfig } from '@/config';
-import type { SeedreamTransform } from './seedream-ai';
-
-const config = getEnvironmentConfig();
+import { config } from "@/config";
+import { MyCarConfig } from "@/config/mycar-config";
+import { Camera } from "expo-camera";
+import * as FileSystem from "expo-file-system";
+import * as ImageManipulator from "expo-image-manipulator";
+import * as ImagePicker from "expo-image-picker";
+import { Alert } from "react-native";
+import type { SeedreamTransform } from "./seedream-ai";
+import { SEEDREAM_TRANSFORMS, seedreamAI } from "./seedream-ai";
+import { SupabaseService } from "./supabase";
 
 export interface ProcessedImage {
   originalUrl: string;
@@ -32,7 +30,7 @@ export interface ProcessingOptions {
   userId: string;
   styleId: string;
   transformId: string;
-  quality?: 'standard' | 'high' | 'ultra';
+  quality?: "standard" | "high" | "ultra";
   customPrompt?: string;
   preserveDetails?: boolean;
 }
@@ -43,53 +41,62 @@ class ImageProcessingService {
   // Camera permissions
   async requestCameraPermissions(): Promise<boolean> {
     const { status } = await Camera.requestCameraPermissionsAsync();
-    
-    if (status !== 'granted') {
+
+    if (status !== "granted") {
       Alert.alert(
-        'Camera Permission Required',
-        'Please allow camera access to take photos of your car.',
+        "Camera Permission Required",
+        "Please allow camera access to take photos of your car.",
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Open Settings', onPress: () => {
-            // TODO: Open app settings
-          }}
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Open Settings",
+            onPress: () => {
+              // TODO: Open app settings
+            },
+          },
         ]
       );
       return false;
     }
-    
+
     return true;
   }
 
   // Gallery permissions
   async requestGalleryPermissions(): Promise<boolean> {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
-    if (status !== 'granted') {
+
+    if (status !== "granted") {
       Alert.alert(
-        'Gallery Permission Required',
-        'Please allow gallery access to choose photos of your car.',
+        "Gallery Permission Required",
+        "Please allow gallery access to choose photos of your car.",
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Open Settings', onPress: () => {
-            // TODO: Open app settings
-          }}
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Open Settings",
+            onPress: () => {
+              // TODO: Open app settings
+            },
+          },
         ]
       );
       return false;
     }
-    
+
     return true;
   }
 
   /**
    * Select image from camera or library
    */
-  async selectImage(source: 'camera' | 'library'): Promise<{ uri: string; base64: string } | null> {
+  async selectImage(
+    source: "camera" | "library"
+  ): Promise<{ uri: string; base64: string } | null> {
     // Request permissions
-    const hasPermission = source === 'camera'
-      ? await this.requestCameraPermissions()
-      : await this.requestGalleryPermissions();
+    const hasPermission =
+      source === "camera"
+        ? await this.requestCameraPermissions()
+        : await this.requestGalleryPermissions();
 
     if (!hasPermission) {
       return null;
@@ -97,21 +104,22 @@ class ImageProcessingService {
 
     try {
       // Launch image picker
-      const result = source === 'camera'
-        ? await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [16, 9],
-            quality: 0.9,
-            base64: true,
-          })
-        : await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [16, 9],
-            quality: 0.9,
-            base64: true,
-          });
+      const result =
+        source === "camera"
+          ? await ImagePicker.launchCameraAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              allowsEditing: true,
+              aspect: [16, 9],
+              quality: 0.9,
+              base64: true,
+            })
+          : await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              allowsEditing: true,
+              aspect: [16, 9],
+              quality: 0.9,
+              base64: true,
+            });
 
       if (!result.canceled && result.assets[0]) {
         const asset = result.assets[0];
@@ -125,8 +133,8 @@ class ImageProcessingService {
         return { uri: asset.uri, base64: asset.base64 };
       }
     } catch (error) {
-      console.error('Error selecting image:', error);
-      Alert.alert('Error', 'Failed to select image. Please try again.');
+      console.error("Error selecting image:", error);
+      Alert.alert("Error", "Failed to select image. Please try again.");
     }
 
     return null;
@@ -136,14 +144,14 @@ class ImageProcessingService {
    * Take photo with camera (convenience method)
    */
   async takePhoto(): Promise<{ uri: string; base64: string } | null> {
-    return this.selectImage('camera');
+    return this.selectImage("camera");
   }
 
   /**
    * Pick photo from gallery (convenience method)
    */
   async pickImage(): Promise<{ uri: string; base64: string } | null> {
-    return this.selectImage('library');
+    return this.selectImage("library");
   }
 
   /**
@@ -160,29 +168,37 @@ class ImageProcessingService {
 
     try {
       // Step 1: Validate image
-      onProgress?.(5, 'Validating image...');
+      onProgress?.(5, "Validating image...");
       const validation = await seedreamAI.validateImage(imageData.base64);
       if (!validation.valid) {
-        throw new Error(validation.reason || 'Invalid image');
+        throw new Error(validation.reason || "Invalid image");
       }
 
       // Step 2: Check rate limits
-      onProgress?.(10, 'Checking limits...');
+      onProgress?.(10, "Checking limits...");
       const canProcess = await this.checkRateLimit(options.userId, true);
       if (!canProcess) {
-        throw new Error('Daily processing limit reached');
+        throw new Error("Daily processing limit reached");
       }
 
       // Step 3: Upload original to storage
-      onProgress?.(20, 'Uploading image...');
-      const originalUrl = await this.uploadImage(imageData.base64, options.userId, 'originals');
+      onProgress?.(20, "Uploading image...");
+      const originalUrl = await this.uploadImage(
+        imageData.base64,
+        options.userId,
+        "originals"
+      );
 
       // Step 4: Apply Seedream transformation
-      onProgress?.(40, 'Applying AI transformation...');
-      
+      onProgress?.(40, "Applying AI transformation...");
+
       // Check if mock mode
       if (config.FEATURES?.MOCK_IMAGE_PROCESSING) {
-        const mockResult = await this.mockSeedreamProcess(imageData.base64, options, onProgress);
+        const mockResult = await this.mockSeedreamProcess(
+          imageData.base64,
+          options,
+          onProgress
+        );
         return mockResult;
       }
 
@@ -190,31 +206,31 @@ class ImageProcessingService {
         imageBase64: imageData.base64,
         transformId: options.transformId,
         customPrompt: options.customPrompt,
-        outputQuality: options.quality || 'high',
+        outputQuality: options.quality || "high",
         preserveDetails: options.preserveDetails ?? true,
       });
 
       if (!seedreamResult.success) {
-        throw new Error(seedreamResult.error || 'Processing failed');
+        throw new Error(seedreamResult.error || "Processing failed");
       }
 
       // Step 5: Save processed image
-      onProgress?.(70, 'Saving processed image...');
+      onProgress?.(70, "Saving processed image...");
       const processedUrl = await this.uploadImage(
         seedreamResult.imageBase64!,
         options.userId,
-        'processed'
+        "processed"
       );
 
       // Step 6: Generate thumbnail
-      onProgress?.(85, 'Generating thumbnail...');
+      onProgress?.(85, "Generating thumbnail...");
       const thumbnailUrl = await this.generateThumbnail(
         seedreamResult.imageBase64!,
         options.userId
       );
 
       // Step 7: Save to database
-      onProgress?.(95, 'Saving to database...');
+      onProgress?.(95, "Saving to database...");
       await this.saveProcessedImage({
         userId: options.userId,
         originalUrl,
@@ -226,7 +242,7 @@ class ImageProcessingService {
         creditsUsed: seedreamResult.creditsUsed,
       });
 
-      onProgress?.(100, 'Complete!');
+      onProgress?.(100, "Complete!");
 
       return {
         originalUrl,
@@ -240,8 +256,13 @@ class ImageProcessingService {
         hasFaces: false, // Seedream handles blurring via prompts
       };
     } catch (error) {
-      console.error('Error processing image:', error);
-      Alert.alert('Processing Failed', error instanceof Error ? error.message : 'Unable to process your image. Please try again.');
+      console.error("Error processing image:", error);
+      Alert.alert(
+        "Processing Failed",
+        error instanceof Error
+          ? error.message
+          : "Unable to process your image. Please try again."
+      );
       return null;
     } finally {
       this.currentProcessingJob = null;
@@ -251,37 +272,41 @@ class ImageProcessingService {
   /**
    * Upload image to Supabase storage
    */
-  private async uploadImage(base64: string, userId: string, folder: string): Promise<string> {
+  private async uploadImage(
+    base64: string,
+    userId: string,
+    folder: string
+  ): Promise<string> {
     try {
       // Generate unique filename
       const timestamp = Date.now();
       const filename = `${userId}/${folder}/${timestamp}.jpg`;
 
       // Convert base64 to blob
-      const blob = this.base64ToBlob(base64, 'image/jpeg');
+      const blob = this.base64ToBlob(base64, "image/jpeg");
 
       // Upload to Supabase storage
-      const { supabase } = await import('./supabase');
+      const { supabase } = await import("./supabase");
       const { data, error } = await supabase.storage
-        .from('portraits')
+        .from("portraits")
         .upload(filename, blob, {
-          contentType: 'image/jpeg',
+          contentType: "image/jpeg",
           upsert: false,
         });
 
       if (error) {
-        console.error('Upload error:', error);
-        throw new Error('Failed to upload image');
+        console.error("Upload error:", error);
+        throw new Error("Failed to upload image");
       }
 
       // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('portraits')
-        .getPublicUrl(filename);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("portraits").getPublicUrl(filename);
 
       return publicUrl;
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error("Error uploading image:", error);
       throw error;
     }
   }
@@ -289,13 +314,16 @@ class ImageProcessingService {
   /**
    * Generate thumbnail for gallery
    */
-  private async generateThumbnail(base64Image: string, userId: string): Promise<string> {
+  private async generateThumbnail(
+    base64Image: string,
+    userId: string
+  ): Promise<string> {
     const manipulatedImage = await ImageManipulator.manipulateAsync(
       `data:image/jpeg;base64,${base64Image}`,
       [
         { resize: { width: 400 } }, // Thumbnail size
       ],
-      { 
+      {
         compress: 0.7,
         format: ImageManipulator.SaveFormat.JPEG,
         base64: true,
@@ -303,10 +331,10 @@ class ImageProcessingService {
     );
 
     if (!manipulatedImage.base64) {
-      throw new Error('Failed to generate thumbnail');
+      throw new Error("Failed to generate thumbnail");
     }
 
-    return this.uploadImage(manipulatedImage.base64, userId, 'thumbnails');
+    return this.uploadImage(manipulatedImage.base64, userId, "thumbnails");
   }
 
   /**
@@ -333,25 +361,25 @@ class ImageProcessingService {
     options: ProcessingOptions,
     onProgress?: (progress: number, message: string) => void
   ): Promise<ProcessedImage> {
-    console.log('[MOCK] Processing with Seedream AI:', options.transformId);
+    console.log("[MOCK] Processing with Seedream AI:", options.transformId);
 
     // Simulate processing steps
     const steps = [
-      { progress: 50, delay: 500, message: 'Detecting car features...' },
-      { progress: 60, delay: 800, message: 'Applying AI transformation...' },
-      { progress: 70, delay: 1000, message: 'Enhancing details...' },
-      { progress: 80, delay: 800, message: 'Finalizing style...' },
-      { progress: 90, delay: 500, message: 'Optimizing output...' },
+      { progress: 50, delay: 500, message: "Detecting car features..." },
+      { progress: 60, delay: 800, message: "Applying AI transformation..." },
+      { progress: 70, delay: 1000, message: "Enhancing details..." },
+      { progress: 80, delay: 800, message: "Finalizing style..." },
+      { progress: 90, delay: 500, message: "Optimizing output..." },
     ];
 
     for (const step of steps) {
-      await new Promise(resolve => setTimeout(resolve, step.delay));
+      await new Promise((resolve) => setTimeout(resolve, step.delay));
       console.log(`[MOCK] ${step.message}`);
       onProgress?.(step.progress, step.message);
     }
 
     // In mock mode, return the original image
-    const mockUrl = await this.uploadImage(base64, options.userId, 'mock');
+    const mockUrl = await this.uploadImage(base64, options.userId, "mock");
     const thumbnailUrl = await this.generateThumbnail(base64, options.userId);
 
     return {
@@ -382,7 +410,7 @@ class ImageProcessingService {
       imageData.base64,
       transformIds,
       {
-        outputQuality: 'high',
+        outputQuality: "high",
         preserveDetails: true,
       }
     );
@@ -393,7 +421,7 @@ class ImageProcessingService {
         const processedUrl = await this.uploadImage(
           result.imageBase64,
           userId,
-          'batch'
+          "batch"
         );
 
         const thumbnailUrl = await this.generateThumbnail(
@@ -401,7 +429,7 @@ class ImageProcessingService {
           userId
         );
 
-        const transform = SEEDREAM_TRANSFORMS.find(t => t.id === transformId);
+        const transform = SEEDREAM_TRANSFORMS.find((t) => t.id === transformId);
 
         results.push({
           originalUrl: imageData.uri,
@@ -423,7 +451,10 @@ class ImageProcessingService {
   /**
    * Get available transforms for user
    */
-  getAvailableTransforms(isUnlocked: boolean, ownedStyles: string[]): SeedreamTransform[] {
+  getAvailableTransforms(
+    isUnlocked: boolean,
+    ownedStyles: string[]
+  ): SeedreamTransform[] {
     return seedreamAI.getAvailableTransforms(isUnlocked, ownedStyles);
   }
 
@@ -431,14 +462,16 @@ class ImageProcessingService {
    * Check rate limits
    */
   async checkRateLimit(userId: string, isUnlocked: boolean): Promise<boolean> {
-    const limit = isUnlocked 
+    const limit = isUnlocked
       ? MyCarConfig.imageProcessing.rateLimits.postUnlock
       : MyCarConfig.imageProcessing.rateLimits.preUnlock;
 
     // In production, this would check the processing_limits table
     // For now, always return true in development
     if (__DEV__) {
-      console.log(`[DEV] Rate limit check for user ${userId}: ${limit} per day`);
+      console.log(
+        `[DEV] Rate limit check for user ${userId}: ${limit} per day`
+      );
       return true;
     }
 
@@ -470,11 +503,11 @@ class ImageProcessingService {
   private base64ToBlob(base64: string, contentType: string): Blob {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
-    
+
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
-    
+
     const byteArray = new Uint8Array(byteNumbers);
     return new Blob([byteArray], { type: contentType });
   }
@@ -482,6 +515,6 @@ class ImageProcessingService {
 
 // Export singleton instance
 export const imageProcessing = new ImageProcessingService();
-export { SEEDREAM_TRANSFORMS } from './seedream-ai';
-export type { SeedreamTransform } from './seedream-ai';
+export { SEEDREAM_TRANSFORMS } from "./seedream-ai";
+export type { SeedreamTransform } from "./seedream-ai";
 export default imageProcessing;

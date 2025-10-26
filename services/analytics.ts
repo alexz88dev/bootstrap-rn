@@ -3,11 +3,11 @@
  * Handles all event tracking and user analytics
  */
 
-import { MyCarConfig } from '@/config/mycar-config';
-import { getEnvironmentConfig } from '@/config';
-import * as Device from 'expo-device';
-import * as Application from 'expo-application';
-import { Platform } from 'react-native';
+import { config } from "@/config";
+import { MyCarConfig } from "@/config/mycar-config";
+import * as Application from "expo-application";
+import * as Device from "expo-device";
+import { Platform } from "react-native";
 
 // Event parameter types
 interface BaseEventParams {
@@ -17,7 +17,7 @@ interface BaseEventParams {
 }
 
 interface PhotoUploadedParams extends BaseEventParams {
-  from: 'camera' | 'gallery';
+  from: "camera" | "gallery";
   file_size_kb: number;
   plate_detected: boolean;
 }
@@ -57,7 +57,7 @@ interface CreditsPurchasedParams extends BaseEventParams {
 
 interface NotificationParams extends BaseEventParams {
   type: string;
-  action: 'scheduled' | 'tapped' | 'dismissed';
+  action: "scheduled" | "tapped" | "dismissed";
 }
 
 // User properties
@@ -85,7 +85,6 @@ class AnalyticsService {
 
   constructor() {
     this.sessionId = this.generateSessionId();
-    const config = getEnvironmentConfig();
     this.isDebug = config.DEBUG || false;
   }
 
@@ -98,15 +97,13 @@ class AnalyticsService {
     }
 
     try {
-      const config = getEnvironmentConfig();
-      
       // Initialize Firebase Analytics
-      if (config.FIREBASE_API_KEY && config.FIREBASE_API_KEY !== '') {
+      if (config.FIREBASE_API_KEY && config.FIREBASE_API_KEY !== "") {
         await this.initializeFirebase(config.FIREBASE_API_KEY);
       }
 
       // Initialize Mixpanel or PostHog
-      if (config.MIXPANEL_TOKEN && config.MIXPANEL_TOKEN !== '') {
+      if (config.MIXPANEL_TOKEN && config.MIXPANEL_TOKEN !== "") {
         await this.initializeMixpanel(config.MIXPANEL_TOKEN);
       }
 
@@ -122,9 +119,9 @@ class AnalyticsService {
       await this.processEventQueue();
 
       this.initialized = true;
-      console.log('Analytics initialized successfully');
+      console.log("Analytics initialized successfully");
     } catch (error) {
-      console.error('Failed to initialize analytics:', error);
+      console.error("Failed to initialize analytics:", error);
     }
   }
 
@@ -136,9 +133,12 @@ class AnalyticsService {
       // In a real implementation, you would initialize Firebase here
       // For Expo, we'll use a web-based approach or native module
       if (this.isDebug) {
-        console.log('[Analytics] Firebase would be initialized with key:', apiKey.substring(0, 10) + '...');
+        console.log(
+          "[Analytics] Firebase would be initialized with key:",
+          apiKey.substring(0, 10) + "..."
+        );
       }
-      
+
       // Mock implementation for now
       this.firebaseAnalytics = {
         logEvent: (event: string, params: any) => {
@@ -153,12 +153,12 @@ class AnalyticsService {
         },
         setUserProperties: (properties: any) => {
           if (this.isDebug) {
-            console.log('[Firebase] User Properties:', properties);
+            console.log("[Firebase] User Properties:", properties);
           }
         },
       };
     } catch (error) {
-      console.error('Failed to initialize Firebase:', error);
+      console.error("Failed to initialize Firebase:", error);
     }
   }
 
@@ -168,9 +168,12 @@ class AnalyticsService {
   private async initializeMixpanel(token: string): Promise<void> {
     try {
       if (this.isDebug) {
-        console.log('[Analytics] Mixpanel would be initialized with token:', token.substring(0, 10) + '...');
+        console.log(
+          "[Analytics] Mixpanel would be initialized with token:",
+          token.substring(0, 10) + "..."
+        );
       }
-      
+
       // Mock implementation for now
       this.mixpanelClient = {
         track: (event: string, params: any) => {
@@ -186,13 +189,13 @@ class AnalyticsService {
         people: {
           set: (properties: any) => {
             if (this.isDebug) {
-              console.log('[Mixpanel] People Properties:', properties);
+              console.log("[Mixpanel] People Properties:", properties);
             }
           },
         },
       };
     } catch (error) {
-      console.error('Failed to initialize Mixpanel:', error);
+      console.error("Failed to initialize Mixpanel:", error);
     }
   }
 
@@ -201,11 +204,11 @@ class AnalyticsService {
    */
   async setUserId(userId: string): Promise<void> {
     this.userId = userId;
-    
+
     if (this.firebaseAnalytics) {
       this.firebaseAnalytics.setUserId(userId);
     }
-    
+
     if (this.mixpanelClient) {
       this.mixpanelClient.identify(userId);
     }
@@ -218,7 +221,7 @@ class AnalyticsService {
     if (this.firebaseAnalytics) {
       this.firebaseAnalytics.setUserProperties(properties);
     }
-    
+
     if (this.mixpanelClient?.people) {
       this.mixpanelClient.people.set(properties);
     }
@@ -229,8 +232,8 @@ class AnalyticsService {
    */
   private async getDefaultUserProperties(): Promise<Partial<UserProperties>> {
     return {
-      app_version: Application.nativeApplicationVersion || '1.0.0',
-      device_type: Device.modelName || 'Unknown',
+      app_version: Application.nativeApplicationVersion || "1.0.0",
+      device_type: Device.modelName || "Unknown",
       os_version: `${Platform.OS} ${Platform.Version}`,
       is_unlocked: false,
       credits_balance: 0,
@@ -299,7 +302,11 @@ class AnalyticsService {
   /**
    * Track app open
    */
-  async trackOpenFirst(source?: string, adGroup?: string, keyword?: string): Promise<void> {
+  async trackOpenFirst(
+    source?: string,
+    adGroup?: string,
+    keyword?: string
+  ): Promise<void> {
     await this.trackEvent(MyCarConfig.analytics.events.OPEN_FIRST, {
       source,
       ad_group: adGroup,
@@ -355,11 +362,14 @@ class AnalyticsService {
    * Track purchase success
    */
   async trackPurchaseSuccess(params: PurchaseSuccessParams): Promise<void> {
-    await this.trackEvent(MyCarConfig.analytics.events.PURCHASE_SUCCESS, params);
-    
+    await this.trackEvent(
+      MyCarConfig.analytics.events.PURCHASE_SUCCESS,
+      params
+    );
+
     // Update user properties
     await this.setUserProperties({
-      is_unlocked: params.product_id === 'unlock_plus_899',
+      is_unlocked: params.product_id === "unlock_plus_899",
       last_purchase_date: new Date().toISOString(),
     });
   }
@@ -381,7 +391,7 @@ class AnalyticsService {
     await this.trackEvent(MyCarConfig.analytics.events.CREDITS_BALANCE_SET, {
       balance,
     });
-    
+
     // Update user property
     await this.setUserProperties({
       credits_balance: balance,
@@ -424,7 +434,7 @@ class AnalyticsService {
   async trackNotificationScheduled(type: string): Promise<void> {
     await this.trackEvent(MyCarConfig.analytics.events.NOTIFICATION_SCHEDULED, {
       type,
-      action: 'scheduled',
+      action: "scheduled",
     } as NotificationParams);
   }
 
@@ -434,7 +444,7 @@ class AnalyticsService {
   async trackNotificationTapped(type: string): Promise<void> {
     await this.trackEvent(MyCarConfig.analytics.events.NOTIFICATION_TAPPED, {
       type,
-      action: 'tapped',
+      action: "tapped",
     } as NotificationParams);
   }
 
@@ -461,7 +471,7 @@ class AnalyticsService {
    * Track screen view (for navigation analytics)
    */
   async trackScreenView(screenName: string, params?: any): Promise<void> {
-    await this.trackEvent('screen_view', {
+    await this.trackEvent("screen_view", {
       screen_name: screenName,
       ...params,
     });

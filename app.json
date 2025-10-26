@@ -54,16 +54,6 @@
             "backgroundColor": "#000000"
           }
         }
-      ],
-      "./plugins/withMyCarWidget.js",
-      [
-        "@bittingz/expo-widgets",
-        {
-          "ios": {
-            "devTeamId": "YOUR_TEAM_ID",
-            "appGroups": ["group.com.alexzamfir.mycarportrait"]
-          }
-        }
       ]
     ],
     "experiments": {

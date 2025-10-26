@@ -118,10 +118,10 @@ export default function PaywallScreen() {
           </View>
         </View>
 
-        {/* What's included */}
+        {/* What’s included */}
         <View style={styles.featuresSection}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
-            What's Included
+            What’s Included
           </ThemedText>
           
           <View style={styles.featuresList}>
